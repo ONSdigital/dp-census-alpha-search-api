@@ -9,8 +9,8 @@ var (
 	// ErrEmptyCoordinates        = errors.New("missing coordinates in array")
 	// ErrEmptyDistanceTerm       = errors.New("empty query term: distance")
 	// ErrEmptyShape              = errors.New("empty shape")
-	ErrIndexNotFound = errors.New("search index not found")
-	// ErrInternalServer          = errors.New("internal server error")
+	ErrIndexNotFound  = errors.New("search index not found")
+	ErrInternalServer = errors.New("internal server error")
 	// ErrInvalidCoordinates      = errors.New("should contain two coordinates, representing [latitude, longitude]")
 	// ErrInvalidShape            = errors.New("invalid list of coordinates, the first and last coordinates should be the same to complete boundary line")
 	// ErrLessThanFourCoordinates = errors.New("invalid number of coordinates, need a minimum of 4 values")
@@ -22,6 +22,7 @@ var (
 	// ErrPostcodeNotFound        = errors.New("postcode not found")
 	ErrTooManyDimensionFilters = errors.New("Too many dimension filters, limited to a maximum of 10")
 	ErrTooManyTopicFilters     = errors.New("Too many topic filters, limited to a maximum of 10")
+	ErrTopicNotFound           = errors.New("Topic not found")
 	ErrUnableToParseJSON       = errors.New("failed to parse json body")
 	ErrUnableToReadMessage     = errors.New("failed to read message body")
 	// ErrUnexpectedStatusCode    = errors.New("unexpected status code from elastic api")
@@ -30,6 +31,7 @@ var (
 	NotFoundMap = map[error]bool{
 		// ErrBoundaryFileNotFound: true,
 		// ErrPostcodeNotFound:     true,
+		ErrTopicNotFound: true,
 	}
 
 	BadRequestMap = map[error]bool{
