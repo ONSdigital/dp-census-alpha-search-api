@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"time"
 
-	errs "github.com/ONSdigital/dp-census-search-prototypes/apierrors"
-	es "github.com/ONSdigital/dp-census-search-prototypes/elasticsearch"
-	"github.com/ONSdigital/dp-census-search-prototypes/scripts/geojson/models"
+	errs "github.com/ONSdigital/dp-census-alpha-search-api/apierrors"
+	es "github.com/ONSdigital/dp-census-alpha-search-api/elasticsearch"
+	"github.com/ONSdigital/dp-census-alpha-search-api/scripts/geojson/models"
 	dphttp "github.com/ONSdigital/dp-net/http"
 	"github.com/ONSdigital/log.go/log"
 	"github.com/tamerh/jsparser"
@@ -21,7 +21,7 @@ import (
 const (
 	elasticsearchAPIURL = "http://localhost:9200"
 	features            = "features"
-	geoFileIndex        = "test_geo"
+	geoFileIndex        = "area-profiles"
 	geoJSONPath         = "../geojson/"
 )
 

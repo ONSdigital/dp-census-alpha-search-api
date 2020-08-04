@@ -5,7 +5,6 @@ import "errors"
 // A list of error messages for Search API
 var (
 	ErrBadSearchQuery = errors.New("bad query sent to elasticsearch index")
-
 	// ErrBoundaryFileNotFound    = errors.New("invalid id, boundary file does not exist")
 	// ErrEmptyCoordinates        = errors.New("missing coordinates in array")
 	// ErrEmptyDistanceTerm       = errors.New("empty query term: distance")
@@ -21,8 +20,10 @@ var (
 	// ErrMissingType             = errors.New("missing type value in request")
 	// ErrParsingQueryParameters  = errors.New("failed to parse query parameters, values must be an integer")
 	// ErrPostcodeNotFound        = errors.New("postcode not found")
-	ErrUnableToParseJSON   = errors.New("failed to parse json body")
-	ErrUnableToReadMessage = errors.New("failed to read message body")
+	ErrTooManyDimensionFilters = errors.New("Too many dimension filters, limited to a maximum of 10")
+	ErrTooManyTopicFilters     = errors.New("Too many topic filters, limited to a maximum of 10")
+	ErrUnableToParseJSON       = errors.New("failed to parse json body")
+	ErrUnableToReadMessage     = errors.New("failed to read message body")
 	// ErrUnexpectedStatusCode    = errors.New("unexpected status code from elastic api")
 	ErrUnmarshallingJSON = errors.New("failed to unmarshal data")
 
@@ -41,7 +42,9 @@ var (
 		// ErrLessThanTwoPolygons:     true,
 		// ErrMissingType:             true,
 		// ErrParsingQueryParameters:  true,
-		ErrUnableToParseJSON:   true,
-		ErrUnableToReadMessage: true,
+		ErrTooManyDimensionFilters: true,
+		ErrTooManyTopicFilters:     true,
+		ErrUnableToParseJSON:       true,
+		ErrUnableToReadMessage:     true,
 	}
 )

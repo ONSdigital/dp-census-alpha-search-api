@@ -20,7 +20,7 @@ import (
 
 const (
 	elasticsearchAPIURL = "http://localhost:9200"
-	postcodeIndex       = "test_postcode"
+	postcodeIndex       = "postcode"
 	mappingsFile        = "postcode-mappings.json"
 )
 
