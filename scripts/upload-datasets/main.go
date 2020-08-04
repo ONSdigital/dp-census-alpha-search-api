@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	defaultDatasetIndex        = "dataset-test"
+	defaultDatasetIndex        = "datasets"
 	defaultElasticsearchAPIURL = "http://localhost:9200"
 	defaultFilename            = "cmd-datasets.csv"
 	defaultDimensionFile       = "../data/dimensions.json"
