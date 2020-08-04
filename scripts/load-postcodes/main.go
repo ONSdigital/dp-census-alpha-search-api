@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	es "github.com/ONSdigital/dp-census-search-prototypes/elasticsearch"
+	es "github.com/ONSdigital/dp-census-alpha-search-api/internal/elasticsearch"
 	dphttp "github.com/ONSdigital/dp-net/http"
 
 	"github.com/ONSdigital/dp-census-search-prototypes/models"

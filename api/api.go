@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/ONSdigital/dp-census-dataset-search-api/models"
+	"github.com/ONSdigital/dp-census-alpha-search-api/models"
 	"github.com/ONSdigital/go-ns/server"
 	"github.com/ONSdigital/log.go/log"
 	"github.com/gorilla/mux"

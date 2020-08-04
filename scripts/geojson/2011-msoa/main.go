@@ -11,7 +11,7 @@ import (
 	"time"
 
 	errs "github.com/ONSdigital/dp-census-alpha-search-api/apierrors"
-	es "github.com/ONSdigital/dp-census-alpha-search-api/elasticsearch"
+	es "github.com/ONSdigital/dp-census-alpha-search-api/internal/elasticsearch"
 	"github.com/ONSdigital/dp-census-alpha-search-api/scripts/geojson/models"
 	dphttp "github.com/ONSdigital/dp-net/http"
 	"github.com/ONSdigital/log.go/log"

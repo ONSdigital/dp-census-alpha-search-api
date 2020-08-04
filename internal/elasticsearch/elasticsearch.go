@@ -10,7 +10,7 @@ import (
 	"net/url"
 
 	errs "github.com/ONSdigital/dp-census-alpha-search-api/apierrors"
-	"github.com/ONSdigital/dp-census-dataset-search-api/models"
+	"github.com/ONSdigital/dp-census-alpha-search-api/models"
 	dphttp "github.com/ONSdigital/dp-net/http"
 	"github.com/ONSdigital/log.go/log"
 )

@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"os"
 
-	es "github.com/ONSdigital/dp-census-search-prototypes/elasticsearch"
+	es "github.com/ONSdigital/dp-census-alpha-search-api/internal/elasticsearch"
 	dphttp "github.com/ONSdigital/dp-net/http"
 	"github.com/ONSdigital/log.go/log"
 )
 
 const (
 	elasticsearchAPIURL = "http://localhost:9200"
-	geoFileIndex        = "test_geo"
+	geoFileIndex        = "area-profiles"
 	mappingsFile        = "geography-mappings.json"
 )
 
