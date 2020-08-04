@@ -36,9 +36,9 @@ Once elasticsearch is running and you can connect to your instance. Follow the i
 | Environment variable        | Default               | Description
 | --------------------------- | --------------------- | -----------
 | BIND_ADDR                   | :10300                | The host and port to bind to |
-| DATASET_INDEX               | datasets              | The index in which the dataset documents are stored in elasticsearch |
-| POSTCODE_INDEX              | postcodes             | The index in which the postcode documents are stored in elasticsearch |
-| AREA_PROFILE_INDEX          | area-profiles         | The index in which the area profile documents are stored in elasticsearch |
+| DATASET_SEARCH_INDEX        | datasets              | The index in which the dataset documents are stored in elasticsearch |
+| POSTCODE_SEARCH_INDEX       | postcodes             | The index in which the postcode documents are stored in elasticsearch |
+| AREA_PROFILE_SEARCH_INDEX   | area-profiles         | The index in which the area profile documents are stored in elasticsearch |
 | ELASTIC_SEARCH_URL          | http://localhost:9200 | The host name for elasticsearch |
 | MAX_SEARCH_RESULTS_OFFSET   | 1000                  | The maximum offset for the number of results returned by search query |
 | SIGN_ELASTICSEARCH_REQUESTS | false                 | Boolean flag to identify whether elasticsearch requests via elastic API need to be signed if elasticsearch cluster is running in aws |
