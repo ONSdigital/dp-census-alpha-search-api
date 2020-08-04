@@ -1,0 +1,201 @@
+{
+  "items": [
+    {
+      "label": "Economic status",
+      "name": "economicstatus"
+    },
+    {
+      "label": "Decade",
+      "name": "decade"
+    },
+    {
+      "label": "Sector Type",
+      "name": "sectortype"
+    },
+    {
+      "label": "statistics",
+      "name": "statistics"
+    },
+    {
+      "label": "Earnings",
+      "name": "earnings"
+    },
+    {
+      "label": "All measures of well-being",
+      "name": "allmeasuresofwellbeing"
+    },
+    {
+      "label": "Hours and earnings",
+      "name": "hoursandearnings"
+    },
+    {
+      "label": "Workplace or residence",
+      "name": "workplaceorresidence"
+    },
+    {
+      "label": "Financing scheme",
+      "name": "financingscheme"
+    },
+    {
+      "label": "Cause of death",
+      "name": "causeofdeath"
+    },
+    {
+      "label": "Place of death",
+      "name": "placeofdeath"
+    },
+    {
+      "label": "Registration or occurrence",
+      "name": "registrationoroccurrence"
+    },
+    {
+      "label": "geography",
+      "name": "geography"
+    },
+    {
+      "label": "Scheme membership size band",
+      "name": "schememembershipsizeband"
+    },
+    {
+      "label": "Estimate",
+      "name": "estimate"
+    },
+    {
+      "label": "Seasonal adjustment",
+      "name": "seasonaladjustment"
+    },
+    {
+      "label": "week",
+      "name": "week"
+    },
+    {
+      "label": "Standard Industrial Classification",
+      "name": "standardindustrialclassification"
+    },
+    {
+      "label": "House price variable",
+      "name": "housepricevariable"
+    },
+    {
+      "label": "Standard Occupational Classification",
+      "name": "standardoccupationalclassification"
+    },
+    {
+      "label": "Month",
+      "name": "month"
+    },
+    {
+      "label": "Visit type",
+      "name": "visittype"
+    },
+    {
+      "label": "Hours worked",
+      "name": "hours"
+    },
+    {
+      "label": "Contributor",
+      "name": "contributor"
+    },
+    {
+      "label": "Public/private sector",
+      "name": "publicprivatesector"
+    },
+    {
+      "label": "Unit of measure",
+      "name": "unitofmeasure"
+    },
+    {
+      "label": "Age",
+      "name": "age"
+    },
+    {
+      "label": "Healthcare provider",
+      "name": "healthcareprovider"
+    },
+    {
+      "label": "Healthcare function",
+      "name": "healthcarefunction"
+    },
+    {
+      "label": "port",
+      "name": "port"
+    },
+    {
+      "label": "sex",
+      "name": "sex"
+    },
+    {
+      "label": "Benefit type",
+      "name": "benefittype"
+    },
+    {
+      "label": "country",
+      "name": "country"
+    },
+    {
+      "label": "variable",
+      "name": "variable"
+    },
+    {
+      "label": "Type of Tax or Benefit",
+      "name": "typeoftaxorbenefit"
+    },
+    {
+      "label": "Deaths",
+      "name": "deaths"
+    },
+    {
+      "label": "Working pattern",
+      "name": "workingpattern"
+    },
+    {
+      "label": "Membership type",
+      "name": "membershiptype"
+    },
+    {
+      "label": "commodity",
+      "name": "commodity"
+    },
+    {
+      "label": "Expectancy type",
+      "name": "lifeexpectancyvariable"
+    },
+    {
+      "label": "agegroups",
+      "name": "agegroups"
+    },
+    {
+      "label": "aggregate",
+      "name": "aggregate"
+    },
+    {
+      "label": "direction",
+      "name": "direction"
+    },
+    {
+      "label": "Property type",
+      "name": "propertytype"
+    },
+    {
+      "label": "House price age",
+      "name": "housepriceage"
+    },
+    {
+      "label": "Year",
+      "name": "time"
+    },
+    {
+      "label": "Status",
+      "name": "status"
+    },
+    {
+      "label": "Cohort",
+      "name": "birthcohort"
+    },
+    {
+      "label": "prices",
+      "name": "prices"
+    }
+  ],
+  "total_count": 49
+}
