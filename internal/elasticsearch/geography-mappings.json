@@ -33,6 +33,17 @@
 	"mappings": {
         "doc": {
 		    "properties": {
+				"id": {
+					"fields": {
+						"raw": {
+							"analyzer": "raw_analyzer",
+							"type": "text",
+							"index_options": "docs",
+							"norms": false
+						}
+					},
+					"type": "keyword"
+				},
                 "hierarchy": {
                     "fields": {
 						"raw": {
@@ -136,7 +147,79 @@
                 "stated_length": {
 					"index": false,
                     "type": "double"
-                },
+				},
+				"statistics": {
+					"properties": {
+						"header": {
+							"index": false,
+							"type": "text"
+						},
+						"value": {
+							"index": false,
+							"type": "double"
+						},
+						"units": {
+							"index": false,
+							"type": "keyword"
+						}
+					}
+				},
+				"datasets": {
+					"properties": {
+						"count": {
+							"index": false,
+							"type": "integer"
+						},
+						"items": {
+							"properties": {
+								"title": {
+									"index": false,
+									"type": "text"
+								},
+								"links": {
+									"properties": {
+										"href": {
+											"index": false,
+											"type": "keyword"
+										},
+										"id": {
+											"index": false,
+											"type": "keyword"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"visualisations": {
+					"properties": {
+						"count": {
+							"index": false,
+							"type": "integer"
+						},
+						"items": {
+							"properties": {
+								"title": {
+									"index": false,
+									"type": "text"
+								},
+								"links": {
+									"properties": {
+										"href": {
+											"index": false,
+											"type": "keyword"
+										},
+										"id": {
+											"index": false,
+											"type": "keyword"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
 			    "location": {
 				    "type": "geo_shape"
 			    }

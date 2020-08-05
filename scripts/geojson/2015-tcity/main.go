@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"strconv"
 	"time"
@@ -15,6 +16,7 @@ import (
 	"github.com/ONSdigital/dp-census-alpha-search-api/scripts/geojson/models"
 	dphttp "github.com/ONSdigital/dp-net/http"
 	"github.com/ONSdigital/log.go/log"
+	uuid "github.com/satori/go.uuid"
 	"github.com/tamerh/jsparser"
 )
 
@@ -132,7 +134,13 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 			return err
 		}
 
+		usualResidents := rand.Intn(500000)
+		householdSpaces := float64(rand.Intn(usualResidents))
+		liveInHouseholds := 100 - (rand.Float64() * 10)
+		averageAge := float64(30 + rand.Intn(10))
+
 		newDoc := &models.GeoDoc{
+			ID:           uuid.NewV4().String(),
 			Code:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["tcity15cd"].(string),
 			Name:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["tcity15nm"].(string),
 			Hierarchy:    "Major Towns and Cities",
@@ -141,6 +149,52 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 			StatedLength: statedLength,
 			Location: models.GeoLocation{
 				Type: feature.ObjectVals["geometry"].(*jsparser.JSON).ObjectVals["type"].(string),
+			},
+			Statistics: []models.Statistic{
+				{
+					Header: "Usual residents",
+					Value:  float64(usualResidents),
+					Units:  "number of people",
+				},
+				{
+					Header: "Household spaces",
+					Value:  householdSpaces,
+					Units:  "number of people",
+				},
+				{
+					Header: "Live in Household",
+					Value:  liveInHouseholds,
+					Units:  "percentage",
+				},
+				{
+					Header: "Average age in years",
+					Value:  averageAge,
+					Units:  "years",
+				},
+			},
+			Datasets: models.Datasets{
+				Count: 1,
+				Items: []models.Item{
+					{
+						Title: "Personal well-being estimates",
+						Links: models.Links{
+							HRef: "https://www.ons.gov.uk/datasets/wellbeing-year-ending/editions/time-series/versions",
+							ID:   "wellbeing-year-ending",
+						},
+					},
+				},
+			},
+			Visualisations: models.Visualisations{
+				Count: 5,
+				Items: []models.Item{
+					{
+						Title: "Line graph - change in well being between 2018 and 2020",
+						Links: models.Links{
+							HRef: "https://www.ons.gov.uk/visualisations/data-vis-well-being-2018-2020/versions",
+							ID:   "data-vis-well-being-2018-2020",
+						},
+					},
+				},
 			},
 		}
 
