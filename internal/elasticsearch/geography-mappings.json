@@ -148,6 +148,10 @@
 					"index": false,
                     "type": "double"
 				},
+				"summary": {
+					"index": false,
+                    "type": "text"
+				},
 				"statistics": {
 					"properties": {
 						"header": {

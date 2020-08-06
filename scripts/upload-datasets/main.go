@@ -38,6 +38,7 @@ type Dataset struct {
 	Alias       string      `json:"alias"`
 	Description string      `json:"description"`
 	Dimensions  []Dimension `json:"dimensions"`
+	GeoLocation GeoLocation `json:"location"`
 	Link        string      `json:"link"`
 	Title       string      `json:"title"`
 	Topic1      string      `json:"topic1,omitempty"`
@@ -49,6 +50,12 @@ type Dataset struct {
 type Dimension struct {
 	Label string `json:"label"`
 	Name  string `json:"name"`
+}
+
+// GeoLocation is an object that describes the geometry of the area a dataset relates to
+type GeoLocation struct {
+	Type        string      `json:"type"`
+	Coordinates interface{} `json:"coordinates"`
 }
 
 // TopicLevels represent the levels within the topic hierarchy (aka taxonomy)
@@ -193,6 +200,7 @@ func uploadDocs(ctx context.Context, esAPI *es.API, indexName, filename string) 
 		datasetDoc := &Dataset{
 			Alias:       row[headerIndex["alias"]],
 			Description: row[headerIndex["description"]],
+			GeoLocation: addUKBoundary(),
 			Link:        row[headerIndex["ons-link"]],
 			Title:       row[headerIndex["title"]],
 		}
@@ -338,4 +346,21 @@ func check(headerRow []string) (map[string]int, error) {
 	}
 
 	return indexHeader, nil
+}
+
+func addUKBoundary() GeoLocation {
+	ukBoundary := [][][]float64{
+		{
+			{2.629085, 50.576346},
+			{-7.692067, 49.433325},
+			{-9.782838, 60.860061},
+			{0.891099, 60.991247},
+			{2.629085, 50.576346},
+		},
+	}
+
+	return GeoLocation{
+		Type:        "polygon",
+		Coordinates: ukBoundary,
+	}
 }
