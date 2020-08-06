@@ -33,10 +33,7 @@ var (
 	multiPolygonCountCh = make(chan int)
 
 	geojsonfiles = []string{
-		"Middle_Layer_Super_Output_Areas__December_2011__Boundaries_EW_BFC.geojson",
-		"Middle_Layer_Super_Output_Areas__December_2011__Boundaries_EW_BFE.geojson",
 		"Middle_Layer_Super_Output_Areas__December_2011__Boundaries_EW_BGC.geojson",
-		"Middle_Layer_Super_Output_Areas__December_2011__Boundaries_EW_BSC.geojson",
 	}
 )
 
@@ -65,7 +62,7 @@ func main() {
 
 		// Iterate items for individual geo boundaries and store documents in elasticsearch
 		if err = storeDocs(ctx, esAPI, geoFileIndex, parser); err != nil {
-			log.Event(ctx, "failed to store lsoa data in elasticsearch", log.FATAL, log.Error(err))
+			log.Event(ctx, "failed to store msoa data in elasticsearch", log.FATAL, log.Error(err))
 			os.Exit(1)
 		}
 	}
@@ -148,7 +145,7 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 			Name:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["msoa11nm"].(string),
 			Hierarchy:    "Middle Layer Super Output Areas",
 			MSOA11NM:     feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["msoa11nm"].(string),
-			LSOA11NMW:    feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["msoa11nmw"].(string),
+			MSOA11NMW:    feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["msoa11nmw"].(string),
 			StatedArea:   statedArea,
 			StatedLength: statedLength,
 			Location: models.GeoLocation{

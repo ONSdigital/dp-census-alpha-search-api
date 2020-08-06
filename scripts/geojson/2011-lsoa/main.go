@@ -33,10 +33,7 @@ var (
 	multiPolygonCountCh = make(chan int)
 
 	geojsonfiles = []string{
-		"Lower_Layer_Super_Output_Areas_(December_2011)_Boundaries_EW_BFC.geojson",
-		"Lower_Layer_Super_Output_Areas_(December_2011)_Boundaries_EW_BFE.geojson",
 		"Lower_Layer_Super_Output_Areas_(December_2011)_Boundaries_EW_BGC.geojson",
-		"Lower_Layer_Super_Output_Areas_(December_2011)_Boundaries_EW_BSC.geojson",
 	}
 )
 

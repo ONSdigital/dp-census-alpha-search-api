@@ -33,8 +33,6 @@ var (
 	multiPolygonCountCh = make(chan int)
 
 	geojsonfiles = []string{
-		"Output_Areas_(December_2011)_Boundaries_EW_BFC.geojson",
-		"Output_Areas_(December_2011)_Boundaries_EW_BFE.geojson",
 		"Output_Areas_(December_2011)_Boundaries_EW_BGC.geojson",
 	}
 )
@@ -64,7 +62,7 @@ func main() {
 
 		// Iterate items for individual geo boundaries and store documents in elasticsearch
 		if err = storeDocs(ctx, esAPI, geoFileIndex, parser); err != nil {
-			log.Event(ctx, "failed to store lsoa data in elasticsearch", log.FATAL, log.Error(err))
+			log.Event(ctx, "failed to store oa data in elasticsearch", log.FATAL, log.Error(err))
 			os.Exit(1)
 		}
 	}

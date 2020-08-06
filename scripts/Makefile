@@ -18,6 +18,7 @@ LSOA=2011-lsoa
 MSOA=2011-msoa
 OA=2011-oa
 TCITY=2015-tcity
+COUNTRY=2019-countries
 GEOJSON=geojson
 LOAD_POSTCODES=load-postcodes
 
@@ -57,7 +58,11 @@ tcity: build
 	go build -o ../$(BUILD)/$(BIN_DIR)/$(TCITY) $(GEOJSON)/$(TCITY)/main.go
 	HUMAN_LOG=1 go run -race $(GEOJSON)/$(TCITY)/main.go
 
-geojson: refreshgeojson lsoa msoa tcity oa
+country: build
+	go build -o ../$(BUILD)/$(BIN_DIR)/$(COUNTRY) $(GEOJSON)/$(COUNTRY)/main.go
+	HUMAN_LOG=1 go run -race $(GEOJSON)/$(COUNTRY)/main.go
+
+geojson: refreshgeojson country tcity lsoa msoa oa
 	
 postcode: build
 	go build -o ../$(BUILD)/$(BIN_DIR)/$(LOAD_POSTCODES) $(LOAD_POSTCODES)/main.go
@@ -66,4 +71,4 @@ postcode: build
 test:
 	go test -cover -race ./...
 
-.PHONY: cmd-datasets-csv taxonomy-json upload-datasets build postcode geojson lsoa msoa tcity refresh test
+.PHONY: cmd-datasets-csv taxonomy-json upload-datasets build postcode geojson lsoa msoa tcity country refresh test

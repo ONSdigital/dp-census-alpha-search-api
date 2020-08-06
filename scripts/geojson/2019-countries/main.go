@@ -27,13 +27,20 @@ const (
 	geoJSONPath         = "../geojson/"
 )
 
+var householdResidents = map[string]float64{
+	"England":          55980000,
+	"Scotland":         5454000,
+	"Wales":            3136000,
+	"Northern Ireland": 1882000,
+}
+
 var (
 	countCh             = make(chan int)
 	polygonCountCh      = make(chan int)
 	multiPolygonCountCh = make(chan int)
 
 	geojsonfiles = []string{
-		"Major_Towns_and_Cities__December_2015__Boundaries.geojson",
+		"Countries__December_2019__Boundaries_UK_BGC.geojson",
 	}
 )
 
@@ -51,7 +58,7 @@ func main() {
 		fileLocation := geoJSONPath + filename
 		f, err := os.Open(fileLocation)
 		if err != nil {
-			log.Event(ctx, "failed to open towns and city file", log.FATAL, log.Error(err))
+			log.Event(ctx, "failed to open countries file", log.FATAL, log.Error(err))
 			os.Exit(1)
 		}
 
@@ -62,12 +69,12 @@ func main() {
 
 		// Iterate items for individual geo boundaries and store documents in elasticsearch
 		if err = storeDocs(ctx, esAPI, geoFileIndex, parser); err != nil {
-			log.Event(ctx, "failed to store towns and cities data in elasticsearch", log.FATAL, log.Error(err))
+			log.Event(ctx, "failed to store country data in elasticsearch", log.FATAL, log.Error(err))
 			os.Exit(1)
 		}
 	}
 
-	log.Event(ctx, "successfully added 2015 towns and city data to "+geoFileIndex+" index", log.INFO)
+	log.Event(ctx, "successfully added 2019 UK country data to "+geoFileIndex+" index", log.INFO)
 }
 
 func trackCounts(ctx context.Context) {
@@ -134,17 +141,16 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 			return err
 		}
 
-		usualResidents := rand.Intn(500000)
-		householdSpaces := float64(rand.Intn(usualResidents))
-		liveInHouseholds := 100 - (rand.Float64() * 10)
-		averageAge := float64(30 + rand.Intn(10))
+		usualResidents := householdResidents[feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["ctry19nm"].(string)]
+		householdSpaces := usualResidents / (1.3 + rand.Float64())
+		liveInHouseholds := 100 - (rand.Float64() * 5)
+		averageAge := float64(37 + rand.Intn(10))
 
 		newDoc := &models.GeoDoc{
 			ID:           uuid.NewV4().String(),
-			Code:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["tcity15cd"].(string),
-			Name:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["tcity15nm"].(string),
-			Hierarchy:    "Major Towns and Cities",
-			TCITY15NM:    feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["tcity15nm"].(string),
+			Code:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["ctry19cd"].(string),
+			Name:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["ctry19nm"].(string),
+			Hierarchy:    "Countries",
 			StatedArea:   statedArea,
 			StatedLength: statedLength,
 			Location: models.GeoLocation{
