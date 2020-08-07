@@ -11,6 +11,7 @@ type GeoDoc struct {
 	Datasets       Datasets       `json:"datasets"`
 	Hierarchy      string         `json:"hierarchy"`
 	LAD11CD        string         `json:"lad11cd,omitempty"`
+	Links          Links          `json:"links"`
 	Location       GeoLocation    `json:"location"`
 	LSOA11NM       string         `json:"lsoa11nm,omitempty"`
 	LSOA11NMW      string         `json:"lsoa11nmw,omitempty"`
@@ -48,6 +49,10 @@ type Item struct {
 }
 
 type Links struct {
+	Self Self `json:"self"`
+}
+
+type Self struct {
 	HRef string `json:"href"`
 	ID   string `json:"id"`
 }

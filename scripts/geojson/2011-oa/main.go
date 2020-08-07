@@ -25,6 +25,7 @@ const (
 	features            = "features"
 	geoFileIndex        = "area-profiles"
 	geoJSONPath         = "../geojson/"
+	port                = "10300"
 )
 
 var (
@@ -139,11 +140,19 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 		liveInHouseholds := 100 - (rand.Float64() * 5)
 		averageAge := float64(30 + rand.Intn(15))
 
+		id := uuid.NewV4().String()
+
 		newDoc := &models.GeoDoc{
-			ID:          uuid.NewV4().String(),
-			Code:        feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["LAD11CD"].(string),
-			Hierarchy:   "Output Areas",
-			LAD11CD:     feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["LAD11CD"].(string),
+			ID:        id,
+			Code:      feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["LAD11CD"].(string),
+			Hierarchy: "Output Areas",
+			LAD11CD:   feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["LAD11CD"].(string),
+			Links: models.Links{
+				Self: models.Self{
+					HRef: "localhost:" + port + "/area-profiles/" + id,
+					ID:   id,
+				},
+			},
 			OA11CD:      feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["OA11CD"].(string),
 			ShapeArea:   shapeArea,
 			ShapeLength: shapeLength,
@@ -178,8 +187,10 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 					{
 						Title: "Personal well-being estimates",
 						Links: models.Links{
-							HRef: "https://www.ons.gov.uk/datasets/wellbeing-year-ending/editions/time-series/versions",
-							ID:   "wellbeing-year-ending",
+							Self: models.Self{
+								HRef: "https://www.ons.gov.uk/datasets/wellbeing-year-ending/editions/time-series/versions",
+								ID:   "wellbeing-year-ending",
+							},
 						},
 					},
 				},
@@ -190,8 +201,10 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 					{
 						Title: "Line graph - change in well being between 2018 and 2020",
 						Links: models.Links{
-							HRef: "https://www.ons.gov.uk/visualisations/data-vis-well-being-2018-2020/versions",
-							ID:   "data-vis-well-being-2018-2020",
+							Self: models.Self{
+								HRef: "https://www.ons.gov.uk/visualisations/data-vis-well-being-2018-2020/versions",
+								ID:   "data-vis-well-being-2018-2020",
+							},
 						},
 					},
 				},
