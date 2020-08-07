@@ -89,7 +89,7 @@ type Item struct {
 
 // Links represents a generic structure for storing links against an item
 type Links struct {
-	Self Self `json:"Self"`
+	Self Self `json:"self"`
 }
 
 // Self represents a link to this resource
