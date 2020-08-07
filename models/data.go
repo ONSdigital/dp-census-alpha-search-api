@@ -49,7 +49,6 @@ type SearchResult struct {
 	Topic1      string      `json:"topic1,omitempty"`
 	Topic2      string      `json:"topic2,omitempty"`
 	Topic3      string      `json:"topic3,omitempty"`
-	Link        string      `json:"link,omitempty"`
 	// area profile data
 	ID             string          `json:"id,omitempty"`
 	Code           string          `json:"code,omitempty"`
@@ -59,6 +58,7 @@ type SearchResult struct {
 	Statistics     []Statistic     `json:"statistics,omitempty"`
 	Visualisations *Visualisations `json:"visualisation,omitempty"`
 	// generic data
+	Links   Links   `json:"links,omitempty"`
 	Matches Matches `json:"matches,omitempty"`
 }
 
@@ -89,6 +89,11 @@ type Item struct {
 
 // Links represents a generic structure for storing links against an item
 type Links struct {
+	Self Self `json:"Self"`
+}
+
+// Self represents a link to this resource
+type Self struct {
 	HRef string `json:"href"`
 	ID   string `json:"id"`
 }

@@ -82,6 +82,22 @@
 						}
 					}
 				},
+				"links": {
+					"properties": {
+						"self": {
+							"properties": {
+								"href": {
+									"index": false,
+									"type": "keyword"
+								},
+								"id": {
+									"index": false,
+									"type": "keyword"
+								}
+							}
+						}
+					}
+				},
 				"location": {
 				    "type": "geo_shape"
 			    },
@@ -128,10 +144,6 @@
 						}
 					},
 					"type": "keyword"
-                },
-                "link": {
-					"index": false,
-                    "type": "text"
                 }
             }
         }

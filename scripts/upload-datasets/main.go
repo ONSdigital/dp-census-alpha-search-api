@@ -39,7 +39,7 @@ type Dataset struct {
 	Description string      `json:"description"`
 	Dimensions  []Dimension `json:"dimensions"`
 	GeoLocation GeoLocation `json:"location"`
-	Link        string      `json:"link"`
+	Links       Links       `json:"links"`
 	Title       string      `json:"title"`
 	Topic1      string      `json:"topic1,omitempty"`
 	Topic2      string      `json:"topic2,omitempty"`
@@ -56,6 +56,17 @@ type Dimension struct {
 type GeoLocation struct {
 	Type        string      `json:"type"`
 	Coordinates interface{} `json:"coordinates"`
+}
+
+// Links represents a set of links related to the dataset
+type Links struct {
+	Self Self `json:"self"`
+}
+
+// Self represents a link to a unique dataset resourse
+type Self struct {
+	HRef string `json:"href"`
+	ID   string `json:"id"`
 }
 
 // TopicLevels represent the levels within the topic hierarchy (aka taxonomy)
@@ -201,8 +212,12 @@ func uploadDocs(ctx context.Context, esAPI *es.API, indexName, filename string) 
 			Alias:       row[headerIndex["alias"]],
 			Description: row[headerIndex["description"]],
 			GeoLocation: addUKBoundary(),
-			Link:        row[headerIndex["ons-link"]],
-			Title:       row[headerIndex["title"]],
+			Links: Links{
+				Self: Self{
+					HRef: row[headerIndex["ons-link"]],
+				},
+			},
+			Title: row[headerIndex["title"]],
 		}
 
 		dimensionNames := row[headerIndex["dimension-names"]]

@@ -76,7 +76,23 @@
 						}
 					},
 					"type": "keyword"
-                },
+				},
+				"links": {
+					"properties": {
+						"self": {
+							"properties": {
+								"href": {
+									"index": false,
+									"type": "keyword"
+								},
+								"id": {
+									"index": false,
+									"type": "keyword"
+								}
+							}
+						}
+					}
+				},
                 "lsoa11nm": {
                     "fields": {
 						"raw": {
@@ -182,13 +198,17 @@
 								},
 								"links": {
 									"properties": {
-										"href": {
-											"index": false,
-											"type": "keyword"
-										},
-										"id": {
-											"index": false,
-											"type": "keyword"
+										"self": {
+											"properties": {
+												"href": {
+													"index": false,
+													"type": "keyword"
+												},
+												"id": {
+													"index": false,
+													"type": "keyword"
+												}
+											}
 										}
 									}
 								}
@@ -210,13 +230,17 @@
 								},
 								"links": {
 									"properties": {
-										"href": {
-											"index": false,
-											"type": "keyword"
-										},
-										"id": {
-											"index": false,
-											"type": "keyword"
+										"self": {
+											"properties": {
+												"href": {
+													"index": false,
+													"type": "keyword"
+												},
+												"id": {
+													"index": false,
+													"type": "keyword"
+												}
+											}
 										}
 									}
 								}
