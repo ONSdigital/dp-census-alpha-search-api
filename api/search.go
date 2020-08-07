@@ -362,8 +362,8 @@ func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topi
 		Size: limit,
 		Highlight: &models.Highlight{
 			Fields:   highlight,
-			PreTags:  []string{"<b><em>"},
-			PostTags: []string{"</em></b>"},
+			PreTags:  []string{"<b>"},
+			PostTags: []string{"</b>"},
 		},
 		Query: models.Query{
 			Bool: &models.Bool{
@@ -447,8 +447,8 @@ func buildAreaSearchQuery(term string, geoLocation *models.GeoLocation, limit, o
 		Size: limit,
 		Highlight: &models.Highlight{
 			Fields:   highlight,
-			PreTags:  []string{"<b><em>"},
-			PostTags: []string{"</em></b>"},
+			PreTags:  []string{"<b>"},
+			PostTags: []string{"</b>"},
 		},
 		Query: models.Query{
 			Bool: &models.Bool{
