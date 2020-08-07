@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"regexp"
@@ -134,7 +135,7 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	// TODO find all data
 	// go func() {
 	// 	// TODO build all search query
-	// 	allDataQuery := buildDatasetSearchQuery(term, dimensionFilters, topicFilters, limit, offset)
+	// 	allDataQuery := buildAllSearchQuery(term, dimensionFilters, topicFilters, limit, offset)
 
 	// 	response, status, err := api.elasticsearch.QueryDatasetSearch(ctx, api.datasetIndex, allDataQuery, limit, offset)
 	// 	if err != nil {
@@ -199,46 +200,11 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 
 	// find area profiles
 	go func() {
-		var geoLocation *models.GeoLocation
-		postcodes := regPostcode.FindAllString(term, -1)
-		if len(postcodes) > 0 {
-			// Only use first postcode found
-			p := strings.ReplaceAll(postcodes[0], " ", "")
-			lcPostcode := strings.ToLower(p)
-
-			postcodeResponse, _, err := api.elasticsearch.GetPostcodes(ctx, api.postcodeIndex, lcPostcode)
-			if err != nil {
-				log.Event(ctx, "getPostcodeSearch endpoint: failed to search for postcode", log.ERROR, log.Error(err), logData)
-				reqError = err
-				areaProfileChan <- models.SearchResults{}
-				return
-			}
-
-			if len(postcodeResponse.Hits.Hits) < 1 {
-				log.Event(ctx, "getPostcodeSearch endpoint: failed to find postcode", log.WARN, log.Error(errs.ErrPostcodeNotFound), logData)
-			}
-
-			// calculate distance (in metres) based on distObj
-			dist := distObj.CalculateDistanceInMetres(ctx)
-
-			pcCoordinate := helpers.Coordinate{
-				Lat: postcodeResponse.Hits.Hits[0].Source.Pin.Location.Lat,
-				Lon: postcodeResponse.Hits.Hits[0].Source.Pin.Location.Lon,
-			}
-
-			// build polygon from circle using long/lat of postcod and distance
-			polygonShape, err := helpers.CircleToPolygon(pcCoordinate, dist, defaultSegments)
-			if err != nil {
-				reqError = err
-				areaProfileChan <- models.SearchResults{}
-				return
-			}
-
-			var coordinates [][][]float64
-			geoLocation = &models.GeoLocation{
-				Type:        "polygon",
-				Coordinates: append(coordinates, polygonShape.Coordinates),
-			}
+		geoLocation, err := api.getPostcodeLocation(ctx, term, distObj, logData)
+		if err != nil {
+			reqError = err
+			areaProfileChan <- models.SearchResults{}
+			return
 		}
 
 		areaProfileQuery := buildAreaSearchQuery(term, geoLocation, limit, offset)
@@ -511,4 +477,47 @@ func buildAreaSearchQuery(term string, geoLocation *models.GeoLocation, limit, o
 	}
 
 	return query
+}
+
+func (api *SearchAPI) getPostcodeLocation(ctx context.Context, term string, distObj *models.DistObj, logData log.Data) (*models.GeoLocation, error) {
+	var geoLocation *models.GeoLocation
+	postcodes := regPostcode.FindAllString(term, -1)
+	if len(postcodes) > 0 {
+		// Only use first postcode found
+		p := strings.ReplaceAll(postcodes[0], " ", "")
+		lcPostcode := strings.ToLower(p)
+
+		postcodeResponse, _, err := api.elasticsearch.GetPostcodes(ctx, api.postcodeIndex, lcPostcode)
+		if err != nil {
+			log.Event(ctx, "getPostcodeSearch endpoint: failed to search for postcode", log.ERROR, log.Error(err), logData)
+
+			return geoLocation, nil
+		}
+
+		if len(postcodeResponse.Hits.Hits) < 1 {
+			log.Event(ctx, "getPostcodeSearch endpoint: failed to find postcode", log.WARN, log.Error(errs.ErrPostcodeNotFound), logData)
+		}
+
+		// calculate distance (in metres) based on distObj
+		dist := distObj.CalculateDistanceInMetres(ctx)
+
+		pcCoordinate := helpers.Coordinate{
+			Lat: postcodeResponse.Hits.Hits[0].Source.Pin.Location.Lat,
+			Lon: postcodeResponse.Hits.Hits[0].Source.Pin.Location.Lon,
+		}
+
+		// build polygon from circle using long/lat of postcod and distance
+		polygonShape, err := helpers.CircleToPolygon(pcCoordinate, dist, defaultSegments)
+		if err != nil {
+			return geoLocation, nil
+		}
+
+		var coordinates [][][]float64
+		geoLocation = &models.GeoLocation{
+			Type:        "polygon",
+			Coordinates: append(coordinates, polygonShape.Coordinates),
+		}
+	}
+
+	return geoLocation, nil
 }
