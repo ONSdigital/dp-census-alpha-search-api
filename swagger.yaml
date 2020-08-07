@@ -375,6 +375,8 @@ components:
               - $ref: '#/components/schemas/DatasetSearchResponse'
               - $ref: '#/components/schemas/AreaProfileSearchResponse'
               - $ref: '#/components/schemas/PublicationSearchResponse'
+            discriminator:
+              propertyName: doc_type
         total_count:
           description: "The total number of resources that matched request. This limit is set to protect infiinte pagination."
           type: integer
