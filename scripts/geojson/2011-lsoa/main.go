@@ -134,7 +134,7 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 			return err
 		}
 
-		usualResidents := rand.Intn(5000)
+		usualResidents := 1 + rand.Intn(4999)
 		householdSpaces := float64(rand.Intn(usualResidents))
 		liveInHouseholds := 100 - (rand.Float64() * 5)
 		averageAge := float64(25 + rand.Intn(30))

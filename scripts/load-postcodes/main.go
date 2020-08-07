@@ -14,13 +14,13 @@ import (
 	es "github.com/ONSdigital/dp-census-alpha-search-api/internal/elasticsearch"
 	dphttp "github.com/ONSdigital/dp-net/http"
 
-	"github.com/ONSdigital/dp-census-search-prototypes/models"
+	"github.com/ONSdigital/dp-census-alpha-search-api/scripts/load-postcodes/models"
 	"github.com/ONSdigital/log.go/log"
 )
 
 const (
 	elasticsearchAPIURL = "http://localhost:9200"
-	postcodeIndex       = "postcode"
+	postcodeIndex       = "postcodes"
 	mappingsFile        = "postcode-mappings.json"
 )
 
