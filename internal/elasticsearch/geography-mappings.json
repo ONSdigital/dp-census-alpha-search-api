@@ -53,7 +53,7 @@
 							"norms": false
 						}
 					},
-					"type": "keyword"
+					"type": "text"
                 },
                 "name": {
                     "fields": {
@@ -64,7 +64,7 @@
 							"norms": false
 						}
 					},
-					"type": "keyword"
+					"type": "text"
                 },
                 "code": {
                     "fields": {

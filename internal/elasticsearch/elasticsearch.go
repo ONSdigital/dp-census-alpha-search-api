@@ -121,8 +121,8 @@ func (api *API) SingleRequest(ctx context.Context, indexName string, document in
 	return status, nil
 }
 
-// QueryDatasetSearch ...
-func (api *API) QueryDatasetSearch(ctx context.Context, indexName string, query interface{}, limit, offset int) (*models.SearchResponse, int, error) {
+// QuerySearchIndex ...
+func (api *API) QuerySearchIndex(ctx context.Context, indexName string, query interface{}, limit, offset int) (*models.SearchResponse, int, error) {
 
 	path := api.url + "/" + indexName + "/_search"
 	logData := log.Data{"query": query, "path": path}
@@ -151,6 +151,42 @@ func (api *API) QueryDatasetSearch(ctx context.Context, indexName string, query 
 
 	if err = json.Unmarshal(responseBody, response); err != nil {
 		log.Event(ctx, "unable to unmarshal json body", log.ERROR, log.Error(err))
+		return nil, status, errs.ErrUnmarshallingJSON
+	}
+
+	return response, status, nil
+}
+
+// GetPostcodes searches index for resources containing postcode
+func (api *API) GetPostcodes(ctx context.Context, indexName, postcode string) (*models.PostcodeResponse, int, error) {
+	path := api.url + "/" + indexName + "/_search"
+
+	logData := log.Data{"postcode": postcode, "path": path}
+	log.Event(ctx, "get postcode", log.INFO, logData)
+
+	body := models.PostcodeRequest{
+		Query: models.PostcodeQuery{
+			Distance: models.PostcodeTerm{
+				Postcode: postcode,
+			},
+		},
+	}
+
+	bytes, err := json.Marshal(body)
+	if err != nil {
+		log.Event(ctx, "unable to marshal elastic search query to bytes", log.ERROR, log.Error(err), logData)
+		return nil, 0, errs.ErrMarshallingQuery
+	}
+
+	responseBody, status, err := api.CallElastic(ctx, path, "GET", bytes)
+	if err != nil {
+		return nil, status, err
+	}
+
+	response := &models.PostcodeResponse{}
+
+	if err = json.Unmarshal(responseBody, response); err != nil {
+		log.Event(ctx, "unable to unmarshal json body", log.ERROR, log.Error(err), logData)
 		return nil, status, errs.ErrUnmarshallingJSON
 	}
 

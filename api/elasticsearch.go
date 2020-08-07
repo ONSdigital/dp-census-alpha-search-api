@@ -8,5 +8,6 @@ import (
 
 // Elasticsearcher - An interface used to access elasticsearch
 type Elasticsearcher interface {
-	QueryDatasetSearch(ctx context.Context, indexName string, query interface{}, limit, offset int) (*models.SearchResponse, int, error)
+	QuerySearchIndex(ctx context.Context, indexName string, query interface{}, limit, offset int) (*models.SearchResponse, int, error)
+	GetPostcodes(ctx context.Context, indexName, postcode string) (*models.PostcodeResponse, int, error)
 }
