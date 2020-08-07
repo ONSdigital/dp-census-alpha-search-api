@@ -39,6 +39,7 @@ type Filter struct {
 	Term   map[string]string      `json:"term,omitempty"`
 	Terms  map[string]interface{} `json:"terms,omitempty"`
 	Nested *Nested                `json:"nested,omitempty"`
+	Shape  *GeoShape              `json:"geo_shape"`
 }
 
 // Match represents the fields that the term should or must match within query
@@ -51,6 +52,17 @@ type Match struct {
 type Nested struct {
 	Path  string        `json:"path,omitempty"`
 	Query []NestedQuery `json:"query,omitempty"`
+}
+
+// GeoShape represents the query object for a elasticsearch geography shape
+type GeoShape struct {
+	Location GeoLocationObj `json:"location"`
+}
+
+// GeoLocationObj represents the attributes of the geography elasticsearch query
+type GeoLocationObj struct {
+	Shape    GeoLocation `json:"shape"`
+	Relation string      `json:"relation"`
 }
 
 // NestedQuery represents ...

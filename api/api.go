@@ -71,7 +71,7 @@ func routes(ctx context.Context,
 		taxonomy:          taxonomy,
 	}
 
-	// api.router.HandleFunc("/search", api.getAllSearch).Methods("GET", "OPTIONS")
+	api.router.HandleFunc("/search", api.searchData).Methods("GET", "OPTIONS")
 	api.router.HandleFunc("/dimensions", api.getDimensions).Methods("GET", "OPTIONS")
 	api.router.HandleFunc("/taxonomy", api.getTaxonomy).Methods("GET", "OPTIONS")
 	api.router.HandleFunc("/taxonomy/{topic}", api.getTopic).Methods("GET", "OPTIONS")

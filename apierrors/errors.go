@@ -19,8 +19,8 @@ var (
 	ErrMarshallingQuery = errors.New("failed to marshal query to bytes for request body to send to elastic")
 	// ErrMissingShapeFile        = errors.New("missing shapefile value in request")
 	// ErrMissingType             = errors.New("missing type value in request")
-	ErrParsingQueryParameters = errors.New("failed to parse query parameters, values must be an integer")
-	// ErrPostcodeNotFound        = errors.New("postcode not found")
+	ErrParsingQueryParameters  = errors.New("failed to parse query parameters, values must be an integer")
+	ErrPostcodeNotFound        = errors.New("postcode not found")
 	ErrTooManyDimensionFilters = errors.New("Too many dimension filters, limited to a maximum of 10")
 	ErrTooManyTopicFilters     = errors.New("Too many topic filters, limited to a maximum of 10")
 	ErrTopicNotFound           = errors.New("Topic not found")
@@ -31,7 +31,6 @@ var (
 
 	NotFoundMap = map[error]bool{
 		// ErrBoundaryFileNotFound: true,
-		// ErrPostcodeNotFound:     true,
 		ErrTopicNotFound: true,
 	}
 
