@@ -129,6 +129,7 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		// allChan         = make(chan models.SearchResults, 1)
 		datasetChan     = make(chan models.SearchResults, 1)
 		areaProfileChan = make(chan models.SearchResults, 1)
+		publicationChan = make(chan models.SearchResults, 1)
 		reqError        error
 	)
 
@@ -145,8 +146,6 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	// 	}
 
 	// 	allData := models.SearchResults{
-	// 		Limit:      page.Limit,
-	// 		Offset:     page.Offset,
 	// 		TotalCount: response.Hits.Total,
 	// 		Items:      []models.SearchResult{},
 	// 	}
@@ -179,8 +178,6 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		datasets := models.SearchResults{
-			Limit:      page.Limit,
-			Offset:     page.Offset,
 			TotalCount: response.Hits.Total,
 			Items:      []models.SearchResult{},
 		}
@@ -219,8 +216,6 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		areaProfiles := models.SearchResults{
-			Limit:      page.Limit,
-			Offset:     page.Offset,
 			TotalCount: response.Hits.Total,
 			Items:      []models.SearchResult{},
 		}
@@ -238,10 +233,18 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		areaProfileChan <- areaProfiles
 	}()
 
+	// find publications
+	go func() {
+		publicationChan <- models.SearchResults{
+			Items: []models.SearchResult{},
+		}
+	}()
+
 	// Wait till we have results from both search requests
 	// all := <-allChan
 	datasets := <-datasetChan
 	areaProfiles := <-areaProfileChan
+	publications := <-publicationChan
 
 	// handle any request errors from search queries
 	if reqError != nil {
@@ -250,9 +253,18 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	searchResults := models.AllSearchResults{
+		Limit:  page.Limit,
+		Offset: page.Offset,
+		Counts: models.Counts{
+			// All: all.TotalCount,
+			Datasets:     datasets.TotalCount,
+			AreaProfiles: areaProfiles.TotalCount,
+			Publications: publications.TotalCount,
+		},
 		// All:          all,
 		Datasets:     datasets,
 		AreaProfiles: areaProfiles,
+		Publications: publications,
 	}
 
 	b, err := json.Marshal(searchResults)

@@ -25,17 +25,27 @@ type DimensionHitList struct {
 
 // AllSearchResults represents a structure capturing a list of all returned data type objects
 type AllSearchResults struct {
+	Counts       Counts        `json:"counts"`
+	Limit        int           `json:"limit"`
+	Offset       int           `json:"offset"`
 	All          SearchResults `json:"all"`
 	Datasets     SearchResults `json:"datasets"`
 	AreaProfiles SearchResults `json:"area_profiles"`
+	Publications SearchResults `json:"publications"`
+}
+
+// Counts represent a list of counts for each data type
+type Counts struct {
+	All          int `json:"all"`
+	Datasets     int `json:"datasets"`
+	AreaProfiles int `json:"area_profiles"`
+	Publications int `json:"publications"`
 }
 
 // SearchResults represents a structure for a list of returned objects
 type SearchResults struct {
 	Count      int            `json:"count"`
 	Items      []SearchResult `json:"items"`
-	Limit      int            `json:"limit"`
-	Offset     int            `json:"offset"`
 	TotalCount int            `json:"total_count"`
 }
 
@@ -50,13 +60,13 @@ type SearchResult struct {
 	Topic2      string      `json:"topic2,omitempty"`
 	Topic3      string      `json:"topic3,omitempty"`
 	// area profile data
-	ID             string          `json:"id,omitempty"`
-	Code           string          `json:"code,omitempty"`
-	Datasets       *Datasets       `json:"datasets,omitempty"`
-	Hierarchy      string          `json:"hierarchy,omitempty"`
-	Name           string          `json:"name,omitempty"`
-	Statistics     []Statistic     `json:"statistics,omitempty"`
-	Visualisations *Visualisations `json:"visualisation,omitempty"`
+	ID   string `json:"id,omitempty"`
+	Code string `json:"code,omitempty"`
+	// Datasets       *Datasets       `json:"datasets,omitempty"`
+	Hierarchy string `json:"hierarchy,omitempty"`
+	Name      string `json:"name,omitempty"`
+	// Statistics     []Statistic     `json:"statistics,omitempty"`
+	// Visualisations *Visualisations `json:"visualisation,omitempty"`
 	// generic data
 	Links   Links   `json:"links,omitempty"`
 	Matches Matches `json:"matches,omitempty"`
