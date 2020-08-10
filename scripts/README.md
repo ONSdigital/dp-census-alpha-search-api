@@ -14,6 +14,7 @@ A list of scripts which load data into elasticsearch for use in the Search API.
     - 2011 Output Areas (OA)
     - 2015 Towns and Cities (TCITY)
     - 2019 UK Countries
+- [build hierarchies json](#build-hierarchies-json)
 
 ### Retrieve CMD Datasets
 
@@ -106,8 +107,12 @@ Once the above files have downloaded, move the files to root of this repository 
 
 Upload all the data to elasticsearch index with:
 `make geojson`
-This will take a long time as it it populates 150,000+ records with full polygon boundaries into elasticsearch `test_geo` index.
+This will take a long time as it it populates 150,000+ records with full polygon boundaries into elasticsearch `area_profiles` index and create a `hierarchy.json` file containing a list of hierarchies that an api user can filter an area profile data type.
 
-There are actually five separate scripts which handle generating data for COUNTRIES, LSOA, MSOA, OA and TCITY files. These can be run separately using `make countries`, `make lsoa`, `make msoa`, `make oa`, `make tcity` respectively. Be aware that if you are running this for the first time you will need to create the `test_geo` index, you can do this by running `make refreshgeojson`.
+There are actually five separate scripts which handle generating data for COUNTRIES, LSOA, MSOA, OA and TCITY files. These can be run separately using `make countries`, `make lsoa`, `make msoa`, `make oa`, `make tcity` respectively. Be aware that if you are running this for the first time you will need to create the `area_profiles` index, you can do this by running `make refreshgeojson`. One can rebuild the list of hierarchies using `make hierarchies`
 
 The refresh script deletes the index and recreates it with 0 data.
+
+### Build Hierarchies JSON
+
+As described at the bottom of [load data from geojson files section](#load-data-from-geojson-files), one can rebuild the hierarchy json file by running `make hierarchies`, this is a list of hierarchies based on the geojson scripts that exist and if the scripts get extended to incorporate new levels of geographical hierarchies then the hardcoded list in hierarchies script will also need updating.
