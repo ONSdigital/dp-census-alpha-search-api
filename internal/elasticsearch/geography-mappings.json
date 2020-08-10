@@ -53,7 +53,7 @@
 							"norms": false
 						}
 					},
-					"type": "text"
+					"type": "keyword"
                 },
                 "name": {
                     "fields": {

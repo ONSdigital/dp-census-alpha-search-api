@@ -9,7 +9,9 @@ import (
 
 const (
 	maximumDimensionFilters, maximumTopicFilters = 10, 10
+	maximumHierarchyFilters                      = 5
 	dimensionName                                = "dimensions.name"
+	hierarchyName                                = "hierarchy"
 	topic1                                       = "topic1"
 	topic2                                       = "topic2"
 	topic3                                       = "topic3"
@@ -19,6 +21,12 @@ const (
 func ErrorInvalidTopics(topicList []string) error {
 	topics := strings.Join(topicList, ",")
 	err := errors.New("invalid list of topics to filter by: " + topics)
+	return err
+}
+
+// ErrorInvalidHierarchy - return error
+func ErrorInvalidHierarchy(hierarchy string) error {
+	err := errors.New("invalid hierarchy to filter by: " + hierarchy)
 	return err
 }
 
@@ -37,6 +45,7 @@ func ValidateDimensions(dimensions string) ([]Filter, error) {
 
 	var filters []Filter
 	for _, dimension := range dimensionList {
+
 		filters = append(filters, Filter{
 			Nested: &Nested{
 				Path: "dimensions",
@@ -47,6 +56,44 @@ func ValidateDimensions(dimensions string) ([]Filter, error) {
 					},
 				},
 			},
+		})
+	}
+
+	return filters, nil
+}
+
+// ValidateHierarchies checks the values in hierarchies are valid for
+// querying elasticsearch API
+func ValidateHierarchies(hierarchies string) ([]Filter, error) {
+
+	// Lower case and remove all white space for hierarchies
+	h := strings.ToLower(strings.ReplaceAll(hierarchies, " ", ""))
+
+	if h == "" {
+		return nil, nil
+	}
+
+	hierarchyList := strings.Split(h, ",")
+
+	if len(hierarchyList) > maximumHierarchyFilters {
+		return nil, errs.ErrTooManyHierarchyFilters
+	}
+
+	var newHierarchyList []string
+	for _, hierarchy := range hierarchyList {
+		// Check hierarchy is valid
+		val, ok := validHierarchies[hierarchy]
+		if !ok {
+			return nil, ErrorInvalidHierarchy(hierarchy)
+		}
+
+		newHierarchyList = append(newHierarchyList, val)
+	}
+
+	var filters []Filter
+	if len(newHierarchyList) > 0 {
+		filters = append(filters, Filter{
+			Terms: map[string]interface{}{hierarchyName: newHierarchyList},
 		})
 	}
 
@@ -102,6 +149,14 @@ func ValidateTopics(topics string) ([]Filter, error) {
 	}
 
 	return filters, nil
+}
+
+var validHierarchies = map[string]string{
+	"countries":                   "Countries",
+	"lowerlayersuperoutputareas":  "Lower Layer Super Output Areas",
+	"majortownsandcities":         "Major Towns and Cities",
+	"middlelayersuperoutputareas": "Middle Layer Super Output Areas",
+	"outputareas":                 "Output Areas",
 }
 
 var validTopics = map[string]int{

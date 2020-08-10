@@ -11,6 +11,7 @@ type Config struct {
 	DatasetIndex              string `envconfig:"DATASET_SEARCH_INDEX"`
 	DimensionsFilename        string `envconfig:"DIMENSIONS_FILENAME"`
 	ElasticSearchAPIURL       string `envconfig:"ELASTIC_SEARCH_URL"         json:"-"`
+	HierarchiesFilename       string `envconfig:"HIERARCHIES_FILENAME"`
 	MaxSearchResultsOffset    int    `envconfig:"MAX_SEARCH_RESULTS_OFFSET"`
 	PoscodeIndex              string `envconfig:"POSTCODE_SEARCH_INDEX"`
 	SignElasticsearchRequests bool   `envconfig:"SIGN_ELASTICSEARCH_REQUESTS"`
@@ -31,6 +32,7 @@ func Get() (*Config, error) {
 		DatasetIndex:              "datasets",
 		DimensionsFilename:        "data/dimensions.json",
 		ElasticSearchAPIURL:       "http://localhost:9200",
+		HierarchiesFilename:       "data/hierarchy.json",
 		MaxSearchResultsOffset:    1000,
 		PoscodeIndex:              "postcodes",
 		SignElasticsearchRequests: false,

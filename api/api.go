@@ -17,6 +17,7 @@ type SearchAPI struct {
 	datasetIndex      string
 	defaultMaxResults int
 	dimensions        models.DimensionsDoc
+	hierarchies       models.GeoHierarchiesDoc
 	elasticsearch     Elasticsearcher
 	postcodeIndex     string
 	router            *mux.Router
@@ -24,7 +25,7 @@ type SearchAPI struct {
 }
 
 // CreateAndInitialiseSearchAPI manages all the routes configured to API
-func CreateAndInitialiseSearchAPI(ctx context.Context, bindAddr string, esAPI Elasticsearcher, defaultMaxResults int, datasetIndex, areaProfileIndex, postcodeIndex string, dimensions models.DimensionsDoc, taxonomy models.Taxonomy, errorChan chan error) {
+func CreateAndInitialiseSearchAPI(ctx context.Context, bindAddr string, esAPI Elasticsearcher, defaultMaxResults int, datasetIndex, areaProfileIndex, postcodeIndex string, dimensions models.DimensionsDoc, taxonomy models.Taxonomy, hierarchies models.GeoHierarchiesDoc, errorChan chan error) {
 
 	router := mux.NewRouter()
 	routes(ctx,
@@ -36,6 +37,7 @@ func CreateAndInitialiseSearchAPI(ctx context.Context, bindAddr string, esAPI El
 		postcodeIndex,
 		dimensions,
 		taxonomy,
+		hierarchies,
 	)
 
 	httpServer = server.New(bindAddr, router)
@@ -58,7 +60,8 @@ func routes(ctx context.Context,
 	defaultMaxResults int,
 	datasetIndex, areaProfileIndex, postcodeIndex string,
 	dimensions models.DimensionsDoc,
-	taxonomy models.Taxonomy) *SearchAPI {
+	taxonomy models.Taxonomy,
+	hierarchies models.GeoHierarchiesDoc) *SearchAPI {
 
 	api := SearchAPI{
 		areaProfileIndex:  areaProfileIndex,
@@ -66,6 +69,7 @@ func routes(ctx context.Context,
 		defaultMaxResults: defaultMaxResults,
 		dimensions:        dimensions,
 		elasticsearch:     elasticsearch,
+		hierarchies:       hierarchies,
 		postcodeIndex:     postcodeIndex,
 		router:            router,
 		taxonomy:          taxonomy,
@@ -75,6 +79,7 @@ func routes(ctx context.Context,
 	api.router.HandleFunc("/dimensions", api.getDimensions).Methods("GET", "OPTIONS")
 	api.router.HandleFunc("/taxonomy", api.getTaxonomy).Methods("GET", "OPTIONS")
 	api.router.HandleFunc("/taxonomy/{topic}", api.getTopic).Methods("GET", "OPTIONS")
+	api.router.HandleFunc("/hierarchies", api.getHierarchies).Methods("GET", "OPTIONS")
 
 	return &api
 }

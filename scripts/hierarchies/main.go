@@ -46,7 +46,7 @@ type GeoHierarchiesDoc struct {
 
 // GeographyObject represents the structure of a dimension
 type GeographyObject struct {
-	Hierarchy           string `json:"hierarchy,omitempty"`
+	Hierarchy           string `json:"hierarchy"`
 	FilterableHierarchy string `json:"filterable_hierarchy"`
 }
 

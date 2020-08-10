@@ -101,6 +101,44 @@ paths:
               example: 86400
         500:
           $ref: '#/components/responses/InternalError'
+  /hierachies:
+    get:
+      tags:
+      - "Public"
+      summary: "Returns a list of geographical levels that can be used to filter an area profile search."
+      responses:
+        200:
+          description: "A json list containing geography hierarchical levels that can be used to filter an area profile search. Should be used to check what hierarchies are filterable on the search endpoint for an area profile data type." 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hierarchies'
+        500:
+          $ref: '#/components/responses/InternalError'
+    options:
+      tags:
+      - "Public"
+      summary: "Information about the communication options available for the target resource"
+      responses:
+        204:
+          description: "No Content"
+          headers:
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: "The methods allowed access against this resource as a comma separated list."
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: "The web urls allowed access against this resource as a comma separated list."
+              example: "*"
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+              description: "Header indicates how long the results of a preflight request can be cached."
+              example: 86400
+        500:
+          $ref: '#/components/responses/InternalError'
   /taxonomy:
     get:
       tags:
@@ -578,6 +616,25 @@ components:
                 type: string
               name:
                 description: "The dimension value to use as a filter for the dimensions query parameter on the datasets endpoint (when searching for datasets)."
+                type: string
+    Hierarchies:
+      type: object
+      properties:
+        total_count:
+          description: "The total number of hierarchies listed in doc."
+          type: integer
+        items:
+          description: "A list of hierarchies, containing a hierarchy and filterable_hierarchy field. The hierarchy field is a human friendly representation og the geographical hierarchy and the filterable_hierarchy can be used to filter an area_profile search using the hierarchies query parameter."
+          type: array
+          items:
+            required: [hierarchy, filterable_hierarhcy]
+            type: object
+            properties:
+              hierarchy:
+                description: "A human readable value of the hierarchy."
+                type: string
+              filterable_hierarchy:
+                description: "The hierarchy value to use as a filter for the hierarchies query parameter on the search endpoint (when searching for an area_profile)."
                 type: string
     Taxonomy:
       type: object

@@ -39,7 +39,7 @@ type Filter struct {
 	Term   map[string]string      `json:"term,omitempty"`
 	Terms  map[string]interface{} `json:"terms,omitempty"`
 	Nested *Nested                `json:"nested,omitempty"`
-	Shape  *GeoShape              `json:"geo_shape"`
+	Shape  *GeoShape              `json:"geo_shape,omitempty"`
 }
 
 // Match represents the fields that the term should or must match within query

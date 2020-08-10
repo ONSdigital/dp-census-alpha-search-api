@@ -22,6 +22,7 @@ const (
 	internalError         = "internal server error"
 	exceedsDefaultMaximum = "the maximum offset has been reached, the offset cannot be more than"
 	topicFilterError      = "invalid list of topics to filter by"
+	hierarchyFilterError  = "invalid hierarchy to filter by"
 )
 
 var regPostcode = regexp.MustCompile(`(?i)[A-Z][A-HJ-Y]?\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2}`)
@@ -41,6 +42,7 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	requestedLimit := r.FormValue("limit")
 	requestedOffset := r.FormValue("offset")
 	dimensions := r.FormValue("dimensions")
+	hierarchies := r.FormValue("hierarchies")
 	topics := r.FormValue("topics")
 
 	requestedDistance := r.FormValue("distance")
@@ -50,8 +52,9 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		"query_term":         q,
 		"requested_limit":    requestedLimit,
 		"requested_offset":   requestedOffset,
-		"topics":             topics,
 		"dimensions":         dimensions,
+		"hierarchies":        hierarchies,
+		"topics":             topics,
 		"requested_distance": requestedDistance,
 		"requested_relation": requestedRelation,
 	}
@@ -104,14 +107,21 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 
 	dimensionFilters, err := models.ValidateDimensions(dimensions)
 	if err != nil {
-		log.Event(ctx, "searchData endpoint: validate filter by topics", log.ERROR, log.Error(err), logData)
+		log.Event(ctx, "searchData endpoint: validate dimensions filter", log.ERROR, log.Error(err), logData)
+		setErrorCode(w, err)
+		return
+	}
+
+	hierarchyFilters, err := models.ValidateHierarchies(hierarchies)
+	if err != nil {
+		log.Event(ctx, "searchData endpoint: validate hierarchies filter", log.ERROR, log.Error(err), logData)
 		setErrorCode(w, err)
 		return
 	}
 
 	topicFilters, err := models.ValidateTopics(topics)
 	if err != nil {
-		log.Event(ctx, "searchData endpoint: validate filter by topics", log.ERROR, log.Error(err), logData)
+		log.Event(ctx, "searchData endpoint: validate topics filter", log.ERROR, log.Error(err), logData)
 		setErrorCode(w, err)
 		return
 	}
@@ -204,7 +214,7 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		areaProfileQuery := buildAreaSearchQuery(term, geoLocation, limit, offset)
+		areaProfileQuery := buildAreaSearchQuery(term, hierarchyFilters, geoLocation, limit, offset)
 
 		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.areaProfileIndex, areaProfileQuery, limit, offset)
 		if err != nil {
@@ -300,6 +310,8 @@ func setErrorCode(w http.ResponseWriter, err error) {
 	case strings.Contains(err.Error(), exceedsDefaultMaximum):
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	case strings.Contains(err.Error(), topicFilterError):
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	case strings.Contains(err.Error(), hierarchyFilterError):
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	default:
 		http.Error(w, internalError, http.StatusInternalServerError)
@@ -418,7 +430,7 @@ func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topi
 	return query
 }
 
-func buildAreaSearchQuery(term string, geoLocation *models.GeoLocation, limit, offset int) interface{} {
+func buildAreaSearchQuery(term string, hierarchyFilters []models.Filter, geoLocation *models.GeoLocation, limit, offset int) interface{} {
 	var object models.Object
 	highlight := make(map[string]models.Object)
 
@@ -462,30 +474,41 @@ func buildAreaSearchQuery(term string, geoLocation *models.GeoLocation, limit, o
 			PreTags:  []string{"<b>"},
 			PostTags: []string{"</b>"},
 		},
-		Query: models.Query{
+
+		Sort:      listOfScores,
+		TotalHits: true,
+	}
+
+	if geoLocation != nil {
+		query.Query = models.Query{
+			Bool: &models.Bool{
+				Filter: []models.Filter{
+					{
+						Shape: &models.GeoShape{
+							Location: models.GeoLocationObj{
+								Shape:    *geoLocation,
+								Relation: "intersects",
+							},
+						},
+					},
+				},
+			},
+		}
+	} else {
+		query.Query = models.Query{
 			Bool: &models.Bool{
 				Should: []models.Match{
 					codeMatch,
 					hierarchyMatch,
 					nameMatch,
 				},
-			},
-		},
-		Sort:      listOfScores,
-		TotalHits: true,
-	}
-
-	if geoLocation != nil {
-		query.Query.Bool.Filter = []models.Filter{
-			{
-				Shape: &models.GeoShape{
-					Location: models.GeoLocationObj{
-						Shape:    *geoLocation,
-						Relation: "intersects",
-					},
-				},
+				MinimumShouldMatch: 1,
 			},
 		}
+	}
+
+	if hierarchyFilters != nil && len(hierarchyFilters) > 0 {
+		query.Query.Bool.Filter = append(query.Query.Bool.Filter, hierarchyFilters...)
 	}
 
 	return query

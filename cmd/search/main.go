@@ -64,7 +64,21 @@ func run(ctx context.Context) error {
 	var dimensions models.DimensionsDoc
 
 	if err = json.Unmarshal([]byte(dimensionsFile), &dimensions); err != nil {
-		log.Event(ctx, "unable to unmarshal taxonomy into struct", log.ERROR, log.Error(err), log.Data{"taxonomy_filename": cfg.TaxonomyFilename})
+		log.Event(ctx, "unable to unmarshal taxonomy into struct", log.ERROR, log.Error(err), log.Data{"dimensions_filename": cfg.DimensionsFilename})
+		return err
+	}
+
+	// Read in Hierarchies JSON into memory
+	hierarchiesFile, err := ioutil.ReadFile(cfg.HierarchiesFilename)
+	if err != nil {
+		log.Event(ctx, "failed to read hierarchies file", log.ERROR, log.Error(err), log.Data{"hierarchies_filename": cfg.HierarchiesFilename})
+		return err
+	}
+
+	var hierarchies models.GeoHierarchiesDoc
+
+	if err = json.Unmarshal([]byte(hierarchiesFile), &hierarchies); err != nil {
+		log.Event(ctx, "unable to unmarshal taxonomy into struct", log.ERROR, log.Error(err), log.Data{"hierarchies_filename": cfg.HierarchiesFilename})
 		return err
 	}
 
@@ -79,7 +93,7 @@ func run(ctx context.Context) error {
 
 	apiErrors := make(chan error, 1)
 
-	api.CreateAndInitialiseSearchAPI(ctx, cfg.BindAddr, esAPI, cfg.MaxSearchResultsOffset, cfg.DatasetIndex, cfg.AreaProfileIndex, cfg.PoscodeIndex, dimensions, taxonomy, apiErrors)
+	api.CreateAndInitialiseSearchAPI(ctx, cfg.BindAddr, esAPI, cfg.MaxSearchResultsOffset, cfg.DatasetIndex, cfg.AreaProfileIndex, cfg.PoscodeIndex, dimensions, taxonomy, hierarchies, apiErrors)
 
 	// block until a fatal error occurs
 	select {
