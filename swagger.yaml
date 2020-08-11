@@ -32,7 +32,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllSearch'
+                allOf:
+                - $ref: '#/components/schemas/Pagination'
+                - $ref: '#/components/schemas/AllSearch'
           links:
             GetAreaProfileByID:
               operationId: getAreaProfile
@@ -86,6 +88,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AreaProfile'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalError'
+    options:
+      tags:
+      - "Public"
+      summary: "Information about the communication options available for the target resource"
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        204:
+          description: "No Content"
+          headers:
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: "The methods allowed access against this resource as a comma separated list."
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: "The web urls allowed access against this resource as a comma separated list."
+              example: "*"
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+              description: "Header indicates how long the results of a preflight request can be cached."
+              example: 86400
+        500:
+          $ref: '#/components/responses/InternalError'
+  /area-profiles/{id}/search:
+    get:
+      tags:
+      - "Public"
+      summary: "Returns a list of datasets related to the area profile page and query parameter as well as any filters."
+      parameters:
+      - $ref: '#/components/parameters/id'
+      - $ref: '#/components/parameters/q'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/dimensions'
+      - $ref: '#/components/parameters/relation'
+      - $ref: '#/components/parameters/topics'
+      responses:
+        200:
+          description: "A json object containing data for an area profile page." 
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Pagination'
+                - $ref: '#/components/schemas/Datasets'
         404:
           $ref: '#/components/responses/NotFoundError'
         500:
@@ -337,13 +391,12 @@ components:
       in: query
       required: false
       schema:
-        default: "within"
+        default: "intersects"
         type: string
         enum: [
           "within",
           "intersects"
         ]
-        example: "intersects"
     topics:
       name: topics
       description: "A comma separated list of a maximum of 10 separate topics to filter the dataset search API against topic fields, topic1, topic2 and topic3. Filtering across the levels is not recommended and will likely result in there being no results being returned."
@@ -383,16 +436,6 @@ components:
               $ref: '#/components/schemas/TotalCount'
             publications:
               $ref: '#/components/schemas/TotalCount'
-        limit:
-          description: "The number of items requested, defaulted to 50 and limited to 1000."
-          type: integer
-          maximum: 1000
-          default: 50
-        offset:
-          description: "The first row of items to retrieve, starting at 0. Use this parameter as a pagination mechanism along with the limit parameter. The total number of items that one can page through is limited to 1000 items."
-          type: integer
-          maximum: 1000
-          default: 0
         all:
           $ref: '#/components/schemas/AllData'
         datasets:
@@ -465,7 +508,6 @@ components:
           description: "The number of items returned."
           type: integer
         items:
-            
           description: "A list of resources that matched multi query."
           type: array
           items:
@@ -869,6 +911,19 @@ components:
           type: string
         links:
           $ref: '#/components/schemas/Links'
+    Pagination:
+      type: object
+      properties:
+        limit:
+          description: "The number of items requested, defaulted to 50 and limited to 1000."
+          type: integer
+          maximum: 1000
+          default: 50
+        offset:
+          description: "The first row of items to retrieve, starting at 0. Use this parameter as a pagination mechanism along with the limit parameter. The total number of items that one can page through is limited to 1000 items."
+          type: integer
+          maximum: 1000
+          default: 0
   responses:
     InvalidRequestError:
       description: "Failed to process the request due to invalid request."

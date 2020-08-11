@@ -81,6 +81,7 @@ func routes(ctx context.Context,
 	api.router.HandleFunc("/taxonomy/{topic}", api.getTopic).Methods("GET", "OPTIONS")
 	api.router.HandleFunc("/hierarchies", api.getHierarchies).Methods("GET", "OPTIONS")
 	api.router.HandleFunc("/area-profiles/{id}", api.getAreaProfile).Methods("GET", "OPTIONS")
+	api.router.HandleFunc("/area-profiles/{id}/search", api.getAreaProfileSearch).Methods("GET", "OPTIONS")
 
 	return &api
 }

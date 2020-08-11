@@ -320,6 +320,8 @@ func setErrorCode(w http.ResponseWriter, err error) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	case strings.Contains(err.Error(), hierarchyFilterError):
 		http.Error(w, err.Error(), http.StatusBadRequest)
+	case strings.Contains(err.Error(), relationError):
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	default:
 		http.Error(w, internalError, http.StatusInternalServerError)
 	}
