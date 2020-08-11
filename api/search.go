@@ -136,42 +136,51 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	log.Event(ctx, "searchData endpoint: just before querying search index", log.INFO, logData)
 
 	var (
-		// allChan         = make(chan models.SearchResults, 1)
+		allChan         = make(chan models.SearchResults, 1)
 		datasetChan     = make(chan models.SearchResults, 1)
 		areaProfileChan = make(chan models.SearchResults, 1)
 		publicationChan = make(chan models.SearchResults, 1)
 		reqError        error
 	)
 
-	// TODO find all data
-	// go func() {
-	// 	// TODO build all search query
-	// 	allDataQuery := buildAllSearchQuery(term, dimensionFilters, topicFilters, limit, offset)
+	// find all data
+	go func() {
+		geoLocation, err := api.getPostcodeLocation(ctx, term, distObj, logData)
+		if err != nil {
+			reqError = err
+			allChan <- models.SearchResults{}
+			return
+		}
 
-	// 	response, status, err := api.elasticsearch.QueryDatasetSearch(ctx, api.datasetIndex, allDataQuery, limit, offset)
-	// 	if err != nil {
-	// 		logData["elasticsearch_status"] = status
-	// 		log.Event(ctx, "searchData endpoint: failed to get all datat type search results", log.ERROR, log.Error(err), logData)
-	// 		reqError = err
-	// 	}
+		// build all search query
+		allDataQuery := api.buildAllSearchQuery(term, geoLocation, dimensionFilters, hierarchyFilters, topicFilters, limit, offset)
 
-	// 	allData := models.SearchResults{
-	// 		TotalCount: response.Hits.Total,
-	// 		Items:      []models.SearchResult{},
-	// 	}
+		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.datasetIndex+","+api.areaProfileIndex, allDataQuery, limit, offset)
+		if err != nil {
+			logData["elasticsearch_status"] = status
+			log.Event(ctx, "searchData endpoint: failed to get all datat type search results", log.ERROR, log.Error(err), logData)
+			reqError = err
+		}
 
-	// 	for _, result := range response.Hits.HitList {
+		log.Event(ctx, "Got data", log.Data{"respose": response})
 
-	// 		doc := result.Source
-	// 		doc.Matches = result.Matches
+		allData := models.SearchResults{
+			TotalCount: response.Hits.Total,
+			Items:      []models.SearchResult{},
+		}
 
-	// 		allData.Items = append(allData.Items, doc)
-	// 	}
+		for _, result := range response.Hits.HitList {
 
-	// 	allData.Count = len(allData.Items)
+			doc := result.Source
+			doc.Matches = result.Matches
 
-	// 	allChan <- allData
-	// }()
+			allData.Items = append(allData.Items, doc)
+		}
+
+		allData.Count = len(allData.Items)
+
+		allChan <- allData
+	}()
 
 	// find datasets
 	go func() {
@@ -251,7 +260,7 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	// Wait till we have results from both search requests
-	// all := <-allChan
+	all := <-allChan
 	datasets := <-datasetChan
 	areaProfiles := <-areaProfileChan
 	publications := <-publicationChan
@@ -266,12 +275,12 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		Limit:  page.Limit,
 		Offset: page.Offset,
 		Counts: models.Counts{
-			// All: all.TotalCount,
+			All:          all.TotalCount,
 			Datasets:     datasets.TotalCount,
 			AreaProfiles: areaProfiles.TotalCount,
 			Publications: publications.TotalCount,
 		},
-		// All:          all,
+		All:          all,
 		Datasets:     datasets,
 		AreaProfiles: areaProfiles,
 		Publications: publications,
@@ -318,7 +327,172 @@ func setErrorCode(w http.ResponseWriter, err error) {
 	}
 }
 
-func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topicFilters []models.Filter, limit, offset int) interface{} {
+func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLocation, dimensionFilters []models.Filter, hierarchyFilters []models.Filter, topicFilters []models.Filter, limit, offset int) *models.Body {
+	var object models.Object
+	highlight := make(map[string]models.Object)
+
+	highlight["alias"] = object
+	highlight["description"] = object
+	highlight["title"] = object
+	highlight["topic1"] = object
+	highlight["topic2"] = object
+	highlight["topic3"] = object
+	highlight["dimensions.label"] = object
+	highlight["dimensions.name"] = object
+
+	highlight["code"] = object
+	highlight["hierarchy"] = object
+	highlight["name"] = object
+
+	alias := make(map[string]string)
+	description := make(map[string]string)
+	title := make(map[string]string)
+	topic1 := make(map[string]string)
+	topic2 := make(map[string]string)
+	topic3 := make(map[string]string)
+	dimensionLabels := make(map[string]string)
+	dimensionNames := make(map[string]string)
+
+	code := make(map[string]string)
+	hierarchy := make(map[string]string)
+	name := make(map[string]string)
+
+	alias["alias"] = term
+	description["description"] = term
+	title["title"] = term
+	topic1["topic1"] = term
+	topic2["topic2"] = term
+	topic3["topic3"] = term
+	dimensionLabels["dimensions.label"] = term
+	dimensionNames["dimensions.name"] = term
+
+	code["code"] = term
+	hierarchy["hierarchy"] = term
+	name["name"] = term
+
+	aliasMatch := models.Match{
+		Match: alias,
+	}
+
+	descriptionMatch := models.Match{
+		Match: description,
+	}
+
+	titleMatch := models.Match{
+		Match: title,
+	}
+
+	topic1Match := models.Match{
+		Match: topic1,
+	}
+
+	topic2Match := models.Match{
+		Match: topic2,
+	}
+
+	topic3Match := models.Match{
+		Match: topic3,
+	}
+
+	codeMatch := models.Match{
+		Match: code,
+	}
+
+	hierarchyMatch := models.Match{
+		Match: hierarchy,
+	}
+
+	nameMatch := models.Match{
+		Match: name,
+	}
+
+	scores := models.Scores{
+		Score: models.Score{
+			Order: "desc",
+		},
+	}
+
+	listOfScores := []models.Scores{}
+	listOfScores = append(listOfScores, scores)
+
+	query := &models.Body{
+		From: offset,
+		Size: limit,
+		Highlight: &models.Highlight{
+			Fields:   highlight,
+			PreTags:  []string{"<b>"},
+			PostTags: []string{"</b>"},
+		},
+		Query:     models.Query{},
+		Sort:      listOfScores,
+		TotalHits: true,
+	}
+
+	if geoLocation != nil {
+		query.Query = models.Query{
+			Bool: &models.Bool{
+				Filter: []models.Filter{
+					{
+						Shape: &models.GeoShape{
+							Location: models.GeoLocationObj{
+								Shape:    *geoLocation,
+								Relation: "intersects",
+							},
+						},
+					},
+					{
+						Terms: map[string]interface{}{"_index": []string{api.areaProfileIndex}},
+					},
+				},
+			},
+		}
+
+		if hierarchyFilters != nil && len(hierarchyFilters) > 0 {
+			query.Query.Bool.Filter = append(query.Query.Bool.Filter, hierarchyFilters...)
+		}
+	} else {
+		// datasetQuery := buildDatasetSearchQuery(term, dimensionFilters, topicFilters, limit, offset)
+		// areaProfileQuery := buildAreaSearchQuery(term, hierarchyFilters, geoLocation, limit, offset)
+
+		// query.Query.Bool = &models.Bool{
+		// 	Should: []models.Match{
+		// 		{
+		// 			Bool: datasetQuery.Query.Bool,
+		// 		},
+		// 		{
+		// 			Bool: areaProfileQuery.Query.Bool,
+		// 		},
+		// 	},
+		// }
+
+		query.Query = models.Query{
+			Bool: &models.Bool{
+				Should: []models.Match{
+					{
+						Bool: &models.Bool{
+							Should: []models.Match{
+								aliasMatch,
+								descriptionMatch,
+								titleMatch,
+								topic1Match,
+								topic2Match,
+								topic3Match,
+								codeMatch,
+								hierarchyMatch,
+								nameMatch,
+							},
+							MinimumShouldMatch: 1,
+						},
+					},
+				},
+			},
+		}
+	}
+
+	return query
+}
+
+func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topicFilters []models.Filter, limit, offset int) *models.Body {
 	var object models.Object
 	highlight := make(map[string]models.Object)
 
@@ -430,7 +604,7 @@ func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topi
 	return query
 }
 
-func buildAreaSearchQuery(term string, hierarchyFilters []models.Filter, geoLocation *models.GeoLocation, limit, offset int) interface{} {
+func buildAreaSearchQuery(term string, hierarchyFilters []models.Filter, geoLocation *models.GeoLocation, limit, offset int) *models.Body {
 	var object models.Object
 	highlight := make(map[string]models.Object)
 

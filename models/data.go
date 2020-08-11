@@ -54,6 +54,7 @@ type SearchResult struct {
 	// dataset data
 	Alias       string      `json:"alias,omitempty"`
 	Description string      `json:"description,omitempty"`
+	DocType     string      `json:"doc_type,omitempty"`
 	Dimensions  []Dimension `json:"dimensions,omitempty"`
 	Title       string      `json:"title,omitempty"`
 	Topic1      string      `json:"topic1,omitempty"`

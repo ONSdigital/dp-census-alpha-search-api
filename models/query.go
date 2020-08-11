@@ -44,6 +44,7 @@ type Filter struct {
 
 // Match represents the fields that the term should or must match within query
 type Match struct {
+	Bool   *Bool             `json:"bool,omitempty"`
 	Match  map[string]string `json:"match,omitempty"`
 	Nested *Nested           `json:"nested,omitempty"`
 }
