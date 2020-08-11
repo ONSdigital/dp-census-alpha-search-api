@@ -82,6 +82,10 @@
 						}
 					}
 				},
+				"doc_type": {
+					"index": false,
+					"type": "keyword"
+				},
 				"links": {
 					"properties": {
 						"self": {

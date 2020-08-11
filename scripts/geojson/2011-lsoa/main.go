@@ -26,6 +26,7 @@ const (
 	geoFileIndex        = "area-profiles"
 	geoJSONPath         = "../geojson/"
 	port                = "10300"
+	documentType        = "area_profile"
 )
 
 var (
@@ -144,6 +145,7 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 		newDoc := &models.GeoDoc{
 			ID:        id,
 			Code:      feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["LSOA11CD"].(string),
+			DocType:   documentType,
 			Name:      feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["LSOA11NM"].(string),
 			Hierarchy: "Lower Layer Super Output Areas",
 			Links: models.Links{

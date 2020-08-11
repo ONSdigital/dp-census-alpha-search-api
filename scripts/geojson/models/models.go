@@ -9,6 +9,7 @@ type GeoDoc struct {
 	Name           string         `json:"name"`
 	Code           string         `json:"code"`
 	Datasets       Datasets       `json:"datasets"`
+	DocType        string         `json:"doc_type"`
 	Hierarchy      string         `json:"hierarchy"`
 	LAD11CD        string         `json:"lad11cd,omitempty"`
 	Links          Links          `json:"links"`

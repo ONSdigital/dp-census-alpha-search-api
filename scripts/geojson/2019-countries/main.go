@@ -26,6 +26,7 @@ const (
 	geoFileIndex        = "area-profiles"
 	geoJSONPath         = "../geojson/"
 	port                = "10300"
+	documentType        = "area_profile"
 )
 
 var householdResidents = map[string]float64{
@@ -152,6 +153,7 @@ func storeDocs(ctx context.Context, esAPI *es.API, indexName string, parser *jsp
 		newDoc := &models.GeoDoc{
 			ID:           id,
 			Code:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["ctry19cd"].(string),
+			DocType:      documentType,
 			Name:         feature.ObjectVals["properties"].(*jsparser.JSON).ObjectVals["ctry19nm"].(string),
 			Hierarchy:    "Countries",
 			StatedArea:   statedArea,

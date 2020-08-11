@@ -44,6 +44,21 @@
 					},
 					"type": "keyword"
 				},
+				"code": {
+                    "fields": {
+						"raw": {
+							"analyzer": "raw_analyzer",
+							"type": "text",
+							"index_options": "docs",
+							"norms": false
+						}
+					},
+					"type": "keyword"
+				},
+				"doc_type": {
+					"index": false,
+					"type": "keyword"
+				},
                 "hierarchy": {
                     "fields": {
 						"raw": {
@@ -66,17 +81,6 @@
 					},
 					"type": "text"
                 },
-                "code": {
-                    "fields": {
-						"raw": {
-							"analyzer": "raw_analyzer",
-							"type": "text",
-							"index_options": "docs",
-							"norms": false
-						}
-					},
-					"type": "keyword"
-				},
 				"links": {
 					"properties": {
 						"self": {

@@ -25,6 +25,7 @@ const (
 	defaultDimensionFile       = "../data/dimensions.json"
 	defaultTaxonomyFile        = "../data/taxonomy.json"
 	mappingsFile               = "dataset-mappings.json"
+	documentType               = "dataset"
 )
 
 var (
@@ -38,6 +39,7 @@ type Dataset struct {
 	Alias       string      `json:"alias"`
 	Description string      `json:"description"`
 	Dimensions  []Dimension `json:"dimensions"`
+	DocType     string      `json:"doc_type"`
 	GeoLocation GeoLocation `json:"location"`
 	Links       Links       `json:"links"`
 	Title       string      `json:"title"`
@@ -211,6 +213,7 @@ func uploadDocs(ctx context.Context, esAPI *es.API, indexName, filename string) 
 		datasetDoc := &Dataset{
 			Alias:       row[headerIndex["alias"]],
 			Description: row[headerIndex["description"]],
+			DocType:     documentType,
 			GeoLocation: addUKBoundary(),
 			Links: Links{
 				Self: Self{

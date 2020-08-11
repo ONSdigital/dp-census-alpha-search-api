@@ -123,8 +123,12 @@ func (api *API) SingleRequest(ctx context.Context, indexName string, document in
 
 // QuerySearchIndex ...
 func (api *API) QuerySearchIndex(ctx context.Context, indexName string, query interface{}, limit, offset int) (*models.SearchResponse, int, error) {
-
-	path := api.url + "/" + indexName + "/_search"
+	var path string
+	if indexName == "" {
+		path = api.url + "/_search"
+	} else {
+		path = api.url + "/" + indexName + "/_search"
+	}
 	logData := log.Data{"query": query, "path": path}
 
 	log.Event(ctx, "find documents based on search term", log.INFO, logData)
