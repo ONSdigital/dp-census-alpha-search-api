@@ -161,6 +161,46 @@ func (api *API) QuerySearchIndex(ctx context.Context, indexName string, query in
 	return response, status, nil
 }
 
+// GetAreaProfile searches for a single area profile with the request id
+func (api *API) GetAreaProfile(ctx context.Context, indexName string, query interface{}) (*models.AreaProfile, int, error) {
+	path := api.url + "/" + indexName + "/_search"
+
+	logData := log.Data{"query": query, "path": path}
+
+	log.Event(ctx, "find area profile doc based on query", log.INFO, logData)
+	bytes, err := json.Marshal(query)
+	if err != nil {
+		log.Event(ctx, "unable to marshal elastic search query to bytes", log.ERROR, log.Error(err), logData)
+		return nil, 0, errs.ErrMarshallingQuery
+	}
+
+	responseBody, status, err := api.CallElastic(ctx, path, "GET", bytes)
+	logData["status"] = status
+	if err != nil {
+		if status >= 500 {
+			log.Event(ctx, "failed to call elasticsearch", log.ERROR, log.Error(err), logData)
+			return nil, status, errs.ErrIndexNotFound
+		}
+
+		logData["response"] = responseBody
+		log.Event(ctx, "unexpected response from elasticsearch index", log.ERROR, log.Error(err), logData)
+		return nil, status, errs.ErrBadSearchQuery
+	}
+
+	response := &models.AreaProfileResponse{}
+
+	if err = json.Unmarshal(responseBody, response); err != nil {
+		log.Event(ctx, "unable to unmarshal json body", log.ERROR, log.Error(err))
+		return nil, status, errs.ErrUnmarshallingJSON
+	}
+
+	if len(response.Hits.HitList) < 1 {
+		return nil, status, errs.ErrAreaProfileNotFound
+	}
+
+	return &response.Hits.HitList[0].Source, status, nil
+}
+
 // GetPostcodes searches index for resources containing postcode
 func (api *API) GetPostcodes(ctx context.Context, indexName, postcode string) (*models.PostcodeResponse, int, error) {
 	path := api.url + "/" + indexName + "/_search"

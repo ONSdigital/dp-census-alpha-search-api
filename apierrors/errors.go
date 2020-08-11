@@ -4,7 +4,8 @@ import "errors"
 
 // A list of error messages for Search API
 var (
-	ErrBadSearchQuery = errors.New("bad query sent to elasticsearch index")
+	ErrAreaProfileNotFound = errors.New("area profile not found")
+	ErrBadSearchQuery      = errors.New("bad query sent to elasticsearch index")
 	// ErrBoundaryFileNotFound    = errors.New("invalid id, boundary file does not exist")
 	// ErrEmptyCoordinates        = errors.New("missing coordinates in array")
 	// ErrEmptyDistanceTerm       = errors.New("empty query term: distance")
@@ -32,7 +33,8 @@ var (
 
 	NotFoundMap = map[error]bool{
 		// ErrBoundaryFileNotFound: true,
-		ErrTopicNotFound: true,
+		ErrAreaProfileNotFound: true,
+		ErrTopicNotFound:       true,
 	}
 
 	BadRequestMap = map[error]bool{

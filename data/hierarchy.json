@@ -1,10 +1,6 @@
 {
   "items": [
     {
-      "hierarchy": "Output Areas",
-      "filterable_hierarchy": "outputareas"
-    },
-    {
       "hierarchy": "Major Towns and Cities",
       "filterable_hierarchy": "majortownsandcities"
     },
@@ -19,6 +15,10 @@
     {
       "hierarchy": "Middle Layer Super Output Areas",
       "filterable_hierarchy": "middlelayersuperoutputareas"
+    },
+    {
+      "hierarchy": "Output Areas",
+      "filterable_hierarchy": "outputareas"
     }
   ],
   "total_count": 5
