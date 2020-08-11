@@ -61,13 +61,10 @@ type SearchResult struct {
 	Topic2      string      `json:"topic2,omitempty"`
 	Topic3      string      `json:"topic3,omitempty"`
 	// area profile data
-	ID   string `json:"id,omitempty"`
-	Code string `json:"code,omitempty"`
-	// Datasets       *Datasets       `json:"datasets,omitempty"`
+	ID        string `json:"id,omitempty"`
+	Code      string `json:"code,omitempty"`
 	Hierarchy string `json:"hierarchy,omitempty"`
 	Name      string `json:"name,omitempty"`
-	// Statistics     []Statistic     `json:"statistics,omitempty"`
-	// Visualisations *Visualisations `json:"visualisation,omitempty"`
 	// generic data
 	Links   Links   `json:"links,omitempty"`
 	Matches Matches `json:"matches,omitempty"`
@@ -77,42 +74,6 @@ type SearchResult struct {
 type Dimension struct {
 	Label string `json:"label,omitempty"`
 	Name  string `json:"name,omitempty"`
-}
-
-// Statistic represents statistical data stored against area profile doc
-type Statistic struct {
-	Header string  `json:"header"`
-	Value  float64 `json:"value"`
-	Units  string  `json:"units"`
-}
-
-// Datasets represents the datasets stored against area profile doc
-type Datasets struct {
-	Count int    `json:"count"`
-	Items []Item `json:"items"`
-}
-
-// Item represents a generic structure for a dataset or visualisation subdocument
-type Item struct {
-	Title string `json:"title"`
-	Links Links  `json:"links"`
-}
-
-// Links represents a generic structure for storing links against an item
-type Links struct {
-	Self Self `json:"self"`
-}
-
-// Self represents a link to this resource
-type Self struct {
-	HRef string `json:"href"`
-	ID   string `json:"id"`
-}
-
-// Visualisations represents the visualisations stored against area profile doc
-type Visualisations struct {
-	Count int    `json:"count"`
-	Items []Item `json:"items"`
 }
 
 // Matches represents a list of members and their arrays of character offsets that matched the search term

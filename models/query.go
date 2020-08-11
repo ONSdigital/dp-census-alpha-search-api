@@ -23,7 +23,8 @@ type Object struct{}
 
 // Query represents the request query details
 type Query struct {
-	Bool *Bool `json:"bool,omitempty"`
+	Bool *Bool             `json:"bool,omitempty"`
+	Term map[string]string `json:"term,omitempty"`
 }
 
 // Bool represents the desirable goals for query

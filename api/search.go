@@ -162,8 +162,6 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 			reqError = err
 		}
 
-		log.Event(ctx, "Got data", log.Data{"respose": response})
-
 		allData := models.SearchResults{
 			TotalCount: response.Hits.Total,
 			Items:      []models.SearchResult{},
