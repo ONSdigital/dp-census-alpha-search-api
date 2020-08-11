@@ -33,6 +33,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllSearch'
+          links:
+            GetAreaProfileByID:
+              operationId: getAreaProfile
+              parameters:
+                shapeId: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the area profile `id` parameter in `GET /area-profiles/{id}`.
         400:
           $ref: '#/components/responses/InvalidRequestError'
         404:
@@ -43,6 +51,51 @@ paths:
       tags:
       - "Public"
       summary: "Information about the communication options available for the target resource"
+      responses:
+        204:
+          description: "No Content"
+          headers:
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: "The methods allowed access against this resource as a comma separated list."
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: "The web urls allowed access against this resource as a comma separated list."
+              example: "*"
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+              description: "Header indicates how long the results of a preflight request can be cached."
+              example: 86400
+        500:
+          $ref: '#/components/responses/InternalError'
+  /area-profiles/{id}:
+    get:
+      tags:
+      - "Public"
+      summary: "Returns a area profile data page."
+      parameters:
+      - $ref: '#/components/parameters/id'
+      operationId: getParentDatasetDocs
+      responses:
+        200:
+          description: "A json object containing data for an area profile page." 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaProfile'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalError'
+    options:
+      tags:
+      - "Public"
+      summary: "Information about the communication options available for the target resource"
+      parameters:
+      - $ref: '#/components/parameters/id'
       responses:
         204:
           description: "No Content"
@@ -223,6 +276,13 @@ paths:
           $ref: '#/components/responses/InternalError'
 components:
   parameters:
+    id:
+      name: id
+      description: "The unique identifier of an area profile"
+      in: path
+      required: true
+      schema:
+        type: string
     q:
       name: q
       description: "The searchable term to find relevant datasets."
@@ -706,6 +766,109 @@ components:
           type: array
           items:
             type: string
+    AreaProfile:
+      type: object
+      required: [id, code, hierarchy, links, location]
+      properties:
+        id:
+          description: "The unique identifier of this area profile resource."
+          type: string
+        name:
+          description: "The name of the geographical area."
+          type: string
+        code:
+          description: "The reference code of the geographical area."
+          type: string
+        datasests:
+          $ref: '#/components/schemas/Items'
+        hierarchy:
+          description: "The geographical hierarchy of the geographical area."
+          type: string
+        links:
+          $ref: '#/components/schemas/Links'
+        location:
+          $ref: '#/components/schemas/Location'
+        statistics:
+          description: "A list of statistics relating to this area profile."
+          type: array
+          items:
+            type: object
+            properties:
+              header:
+                description: "The header describing the statistic."
+                type: string
+              value: 
+                description: "The observation value of the statistical data."
+                type: string
+              units:
+                description: "The units to quantify the value."
+                type: string
+                enum: [
+                  percentage,
+                  number of people,
+                  years,
+                ]
+        visualisations:
+          $ref: '#/components/schemas/Items'
+    Location:
+      description: "The geographical location of the dataset or data found, containing a geographial description of the shape."
+      type: object
+      required: [coordinates, type]
+      properties:
+        coordinates:
+          description: "A set of list coordinates to handle different geographical shapes, e.g. ring, circle."
+          type: array
+          items:
+            $ref: '#/components/schemas/Shape'
+        type:
+          description: "The type of shape of the geographical boundary."
+          type: string
+          enum: [
+            "Multipolygon",
+            "Polygon"
+          ]
+    Shape:
+      description: "The actual shape of the geographical area the dataset belongs to. Multipolygons have an extra nest of arrays then a polygon shape as multipolygons are arrays of polygons."
+      type: array
+      minLength: 4
+      required: [
+        coordinates,
+      ]
+      items:
+        $ref: '#/components/schemas/Coordinates'
+    Coordinates:
+      description: "A list of coordinates to generate a continuous boundary line, first and last item must match."
+      type: array
+      required: [
+        coordinate,
+      ]
+      items:
+        $ref: '#/components/schemas/Coordinate'
+    Coordinate:
+      description: "A single set of coordinates defining a single point on the Earth by longitude then latitude respectively. Numerical values are float64 type."
+      type: number
+      format: float64
+      example: [ -3.4627, 51.486 ]
+      minLength: 2
+      maxLength: 2
+    Items:
+      type: object
+      properties:
+        count:
+          description: "The total number of objects in the items array."
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+    Item:
+      type: object
+      properties:
+        title:
+          description: "The reference name or title of the item object"
+          type: string
+        links:
+          $ref: '#/components/schemas/Links'
   responses:
     InvalidRequestError:
       description: "Failed to process the request due to invalid request."
