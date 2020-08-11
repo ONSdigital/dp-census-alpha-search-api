@@ -37,6 +37,12 @@ func ErrorInvalidDistance(m string) error {
 	return err
 }
 
+// ErrorInvalidRelation - return error
+func ErrorInvalidRelation(m string) error {
+	err := errors.New("invalid relation value: " + m + ". Should contain one of the following: intersects or within")
+	return err
+}
+
 // ValidateDistance ...
 func ValidateDistance(distance string) (*DistObj, error) {
 	if distance == "" {
@@ -88,4 +94,23 @@ func (dO *DistObj) CalculateDistanceInMetres(ctx context.Context) (distance floa
 	}
 
 	return
+}
+
+var validRelations = map[string]bool{
+	"intersects": true,
+	"within":     true,
+}
+
+func ValidateGeoShapeRelation(ctx context.Context, defaultRelation, relation string) (string, error) {
+	if relation == "" {
+		return defaultRelation, nil
+	}
+
+	lcRelation := strings.ToLower(relation)
+
+	if _, ok := validRelations[lcRelation]; !ok {
+		return "", ErrorInvalidRelation(relation)
+	}
+
+	return lcRelation, nil
 }

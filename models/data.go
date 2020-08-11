@@ -49,6 +49,15 @@ type SearchResults struct {
 	TotalCount int            `json:"total_count"`
 }
 
+// DatasetSearchResults represents a structure for a list of returned dataset resources
+type DatasetSearchResults struct {
+	Count      int            `json:"count"`
+	Limit      int            `json:"limit"`
+	Offset     int            `json:"offset"`
+	TotalCount int            `json:"total_count"`
+	Items      []SearchResult `json:"items"`
+}
+
 // SearchResult represents data on a single item of search results
 type SearchResult struct {
 	// dataset data
