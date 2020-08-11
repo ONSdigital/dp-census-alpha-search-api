@@ -1,40 +1,84 @@
 {
   "items": [
     {
+      "label": "sex",
+      "name": "sex"
+    },
+    {
       "label": "House price age",
       "name": "housepriceage"
     },
     {
-      "label": "Benefit type",
-      "name": "benefittype"
+      "label": "Healthcare function",
+      "name": "healthcarefunction"
     },
     {
-      "label": "commodity",
-      "name": "commodity"
+      "label": "Visit type",
+      "name": "visittype"
     },
     {
-      "label": "Standard Industrial Classification",
-      "name": "standardindustrialclassification"
+      "label": "Expectancy type",
+      "name": "lifeexpectancyvariable"
     },
     {
-      "label": "statistics",
-      "name": "statistics"
-    },
-    {
-      "label": "Sector Type",
-      "name": "sectortype"
-    },
-    {
-      "label": "Advert type",
-      "name": "jobadvert"
+      "label": "Month",
+      "name": "month"
     },
     {
       "label": "Income type",
       "name": "income"
     },
     {
-      "label": "Economic status",
-      "name": "economicstatus"
+      "label": "Public/private sector",
+      "name": "publicprivatesector"
+    },
+    {
+      "label": "Unit of measure",
+      "name": "unitofmeasure"
+    },
+    {
+      "label": "Age",
+      "name": "age"
+    },
+    {
+      "label": "Benefit type",
+      "name": "benefittype"
+    },
+    {
+      "label": "Estimate",
+      "name": "estimate"
+    },
+    {
+      "label": "Workplace or residence",
+      "name": "workplaceorresidence"
+    },
+    {
+      "label": "Standard Occupational Classification",
+      "name": "standardoccupationalclassification"
+    },
+    {
+      "label": "Place of death",
+      "name": "placeofdeath"
+    },
+    {
+      "label": "aggregate",
+      "name": "aggregate"
+    },
+    {
+      "label": "Contributor",
+      "name": "contributor"
+    },
+    {
+      "label": "Seasonal adjustment",
+      "name": "seasonaladjustment"
+    },
+    {
+      "label": "Sector Type",
+      "name": "sectortype"
+    },
+    {
+      "label": "Hours worked",
+      "name": "hours"
     },
     {
       "label": "Property type",
@@ -45,68 +89,112 @@
       "name": "prices"
     },
     {
-      "label": "Financing scheme",
-      "name": "financingscheme"
+      "label": "statistics",
+      "name": "statistics"
     },
     {
-      "label": "Healthcare function",
-      "name": "healthcarefunction"
+      "label": "Earnings",
+      "name": "earnings"
     },
     {
-      "label": "Estimate",
-      "name": "estimate"
+      "label": "Hours and earnings",
+      "name": "hoursandearnings"
     },
     {
-      "label": "Seasonal adjustment",
-      "name": "seasonaladjustment"
+      "label": "Economic status",
+      "name": "economicstatus"
     },
     {
-      "label": "Standard Occupational Classification",
-      "name": "standardoccupationalclassification"
-    },
-    {
-      "label": "Status",
-      "name": "status"
-    },
-    {
-      "label": "aggregate",
-      "name": "aggregate"
-    },
-    {
-      "label": "Quintile",
-      "name": "quintile"
+      "label": "Type of Tax or Benefit",
+      "name": "typeoftaxorbenefit"
     },
     {
       "label": "Deaths",
       "name": "deaths"
     },
     {
-      "label": "Visit type",
-      "name": "visittype"
+      "label": "Scheme membership size band",
+      "name": "schememembershipsizeband"
     },
     {
-      "label": "variable",
-      "name": "variable"
-    },
-    {
-      "label": "Healthcare provider",
-      "name": "healthcareprovider"
-    },
-    {
-      "label": "Week",
-      "name": "week"
+      "label": "House price variable",
+      "name": "housepricevariable"
     },
     {
       "label": "Cause of death",
       "name": "causeofdeath"
     },
     {
-      "label": "Unit of measure",
-      "name": "unitofmeasure"
+      "label": "Cohort",
+      "name": "birthcohort"
+    },
+    {
+      "label": "Deflation status",
+      "name": "deflation"
+    },
+    {
+      "label": "Healthcare provider",
+      "name": "healthcareprovider"
+    },
+    {
+      "label": "Advert type",
+      "name": "jobadvert"
+    },
+    {
+      "label": "Status",
+      "name": "status"
+    },
+    {
+      "label": "commodity",
+      "name": "commodity"
+    },
+    {
+      "label": "variable",
+      "name": "variable"
+    },
+    {
+      "label": "Working pattern",
+      "name": "workingpattern"
+    },
+    {
+      "label": "Membership type",
+      "name": "membershiptype"
     },
     {
       "label": "All measures of well-being",
       "name": "allmeasuresofwellbeing"
+    },
+    {
+      "label": "Financing scheme",
+      "name": "financingscheme"
+    },
+    {
+      "label": "Decade",
+      "name": "decade"
+    },
+    {
+      "label": "port",
+      "name": "port"
+    },
+    {
+      "label": "Year",
+      "name": "time"
+    },
+    {
+      "label": "Geography",
+      "name": "geography"
+    },
+    {
+      "label": "Quintile",
+      "name": "quintile"
+    },
+    {
+      "label": "Registration or occurrence",
+      "name": "registrationoroccurrence"
+    },
+    {
+      "label": "Week",
+      "name": "week"
     },
     {
       "label": "country",
@@ -117,100 +205,12 @@
       "name": "direction"
     },
     {
-      "label": "sex",
-      "name": "sex"
-    },
-    {
-      "label": "Month",
-      "name": "month"
-    },
-    {
-      "label": "Workplace or residence",
-      "name": "workplaceorresidence"
-    },
-    {
-      "label": "Cohort",
-      "name": "birthcohort"
-    },
-    {
-      "label": "Hours and earnings",
-      "name": "hoursandearnings"
-    },
-    {
-      "label": "Deflation status",
-      "name": "deflation"
-    },
-    {
-      "label": "Registration or occurrence",
-      "name": "registrationoroccurrence"
-    },
-    {
-      "label": "Contributor",
-      "name": "contributor"
-    },
-    {
-      "label": "port",
-      "name": "port"
-    },
-    {
-      "label": "Working pattern",
-      "name": "workingpattern"
-    },
-    {
-      "label": "Earnings",
-      "name": "earnings"
-    },
-    {
-      "label": "Scheme membership size band",
-      "name": "schememembershipsizeband"
-    },
-    {
-      "label": "Age",
-      "name": "age"
-    },
-    {
-      "label": "Type of Tax or Benefit",
-      "name": "typeoftaxorbenefit"
+      "label": "Standard Industrial Classification",
+      "name": "standardindustrialclassification"
     },
     {
       "label": "agegroups",
       "name": "agegroups"
-    },
-    {
-      "label": "Geography",
-      "name": "geography"
-    },
-    {
-      "label": "Place of death",
-      "name": "placeofdeath"
-    },
-    {
-      "label": "Public/private sector",
-      "name": "publicprivatesector"
-    },
-    {
-      "label": "Decade",
-      "name": "decade"
-    },
-    {
-      "label": "House price variable",
-      "name": "housepricevariable"
-    },
-    {
-      "label": "Hours worked",
-      "name": "hours"
-    },
-    {
-      "label": "Membership type",
-      "name": "membershiptype"
-    },
-    {
-      "label": "Expectancy type",
-      "name": "lifeexpectancyvariable"
-    },
-    {
-      "label": "Year",
-      "name": "time"
     }
   ],
   "total_count": 53

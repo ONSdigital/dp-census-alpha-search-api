@@ -20,8 +20,7 @@ const (
 
 	onsSite = "https://www.ons.gov.uk"
 
-	defaultBindAddr = "mongodb://root:6E53394F-7469-4D16-8197-BB72B7E95995@localhost:27018"
-	// defaultBindAddr  = "localhost:27017"
+	defaultBindAddr  = "localhost:27017"
 	defaultFilename  = "cmd-datasets.csv"
 	missingFileError = "no such file or directory"
 )
@@ -125,9 +124,11 @@ func main() {
 			// Check length to determine if qmi is an ons.gov.uk url
 			if len(qmiPath) > 1 {
 				// Split path in two leaving the dataset name separate from taxonomy of topics
-				qmiArray := strings.SplitAfter(qmiPath[1], "methodologies")
+				qmiArray1 := strings.SplitAfter(qmiPath[1], "methodologies")
+				qmiArray2 := strings.SplitAfter(qmiArray1[0], "qmis")
+
 				// Create a list of topics
-				list := strings.SplitAfter(qmiArray[0], "/")
+				list := strings.SplitAfter(qmiArray2[0], "/")
 				// Find lowest level topic in list, this will be the second from last value due to "methodologies" keyword being the last value in list
 				topic = list[len(list)-2]
 
