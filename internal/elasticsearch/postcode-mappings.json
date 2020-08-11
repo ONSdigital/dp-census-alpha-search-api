@@ -1,0 +1,61 @@
+{
+	"settings": {
+		"index": {
+			"number_of_replicas": 1,
+			"number_of_shards": 5,
+            "analysis": {
+				"filter": {
+					"autocomplete_filter": {
+						"max_gram": 35,
+						"min_gram": 1,
+						"type": "edge_ngram"
+					},
+					"collapse_whitespace_filter": {
+						"pattern": "\\s+",
+						"replacement": " ",
+						"type": "pattern_replace"
+					}
+				},
+				"analyzer": {
+					"raw_analyzer": {
+						"filter": [
+							"lowercase",
+							"collapse_whitespace_filter",
+							"trim"
+						],
+						"tokenizer": "whitespace",
+						"type": "custom"
+					}
+				}
+			}
+		}
+	},
+	"mappings": {
+        "doc": {
+            "properties": {
+                "pin": {
+                    "properties": {
+                        "location": {
+                            "type": "geo_point"
+                        }
+                    }
+                },
+                "postcode": {
+				    "fields": {
+						"raw": {
+							"analyzer": "raw_analyzer",
+							"type": "text",
+							"index_options": "docs",
+							"norms": false
+						}
+					},
+					"type": "keyword"
+				},
+				"postcode_raw": {
+					"index": false,
+                    "type": "keyword"
+				}
+            }
+        }
+    }
+}

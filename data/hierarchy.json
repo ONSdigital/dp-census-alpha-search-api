@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "hierarchy": "Output Areas",
+      "filterable_hierarchy": "outputareas"
+    },
+    {
+      "hierarchy": "Major Towns and Cities",
+      "filterable_hierarchy": "majortownsandcities"
+    },
+    {
+      "hierarchy": "Countries",
+      "filterable_hierarchy": "countries"
+    },
+    {
+      "hierarchy": "Lower Layer Super Output Areas",
+      "filterable_hierarchy": "lowerlayersuperoutputareas"
+    },
+    {
+      "hierarchy": "Middle Layer Super Output Areas",
+      "filterable_hierarchy": "middlelayersuperoutputareas"
+    }
+  ],
+  "total_count": 5
+}

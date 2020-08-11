@@ -1,0 +1,715 @@
+openapi: 3.0.0
+info:
+  description: "Used to search for possible data across the ons website."
+  version: "v0.1.0"
+  title: "Search for a dataset, a geographical area or a publication."
+  license:
+    name: "Open Government Licence v3.0"
+    url: "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+servers:
+  - url: http://cat.ons.digital/v1
+    description: "Staging API for prototype"
+tags:
+- name: "Public"
+paths:
+  /search:
+    get:
+      tags:
+      - "Public"
+      summary: "Returns multiple lists of search results based on the search term. The lists are datasets, area_profiles, publications and all resources. Be aware that some filter parameters only take place on certain search lists."
+      parameters:
+      - $ref: '#/components/parameters/q'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/dimensions'
+      - $ref: '#/components/parameters/distance'
+      - $ref: '#/components/parameters/hierarchies'
+      - $ref: '#/components/parameters/relation'
+      - $ref: '#/components/parameters/topics'
+      responses:
+        200:
+          description: "A json object containing multiple list of search results for dataset, area_profile, publication resources; which are relevant to the search term"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllSearch'
+        400:
+          $ref: '#/components/responses/InvalidRequestError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalError'
+    options:
+      tags:
+      - "Public"
+      summary: "Information about the communication options available for the target resource"
+      responses:
+        204:
+          description: "No Content"
+          headers:
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: "The methods allowed access against this resource as a comma separated list."
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: "The web urls allowed access against this resource as a comma separated list."
+              example: "*"
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+              description: "Header indicates how long the results of a preflight request can be cached."
+              example: 86400
+        500:
+          $ref: '#/components/responses/InternalError'
+  /dimensions:
+    get:
+      tags:
+      - "Public"
+      summary: "Returns a list of dimensions that exist for the datasets endpoint."
+      responses:
+        200:
+          description: "A json list containing dimensions that exist for datasets accessible by the datasets endpoint. Should be used to check what dimensions are filterable on the datasets endpoint." 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dimensions'
+        500:
+          $ref: '#/components/responses/InternalError'
+    options:
+      tags:
+      - "Public"
+      summary: "Information about the communication options available for the target resource"
+      responses:
+        204:
+          description: "No Content"
+          headers:
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: "The methods allowed access against this resource as a comma separated list."
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: "The web urls allowed access against this resource as a comma separated list."
+              example: "*"
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+              description: "Header indicates how long the results of a preflight request can be cached."
+              example: 86400
+        500:
+          $ref: '#/components/responses/InternalError'
+  /hierachies:
+    get:
+      tags:
+      - "Public"
+      summary: "Returns a list of geographical levels that can be used to filter an area profile search."
+      responses:
+        200:
+          description: "A json list containing geography hierarchical levels that can be used to filter an area profile search. Should be used to check what hierarchies are filterable on the search endpoint for an area profile data type." 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hierarchies'
+        500:
+          $ref: '#/components/responses/InternalError'
+    options:
+      tags:
+      - "Public"
+      summary: "Information about the communication options available for the target resource"
+      responses:
+        204:
+          description: "No Content"
+          headers:
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: "The methods allowed access against this resource as a comma separated list."
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: "The web urls allowed access against this resource as a comma separated list."
+              example: "*"
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+              description: "Header indicates how long the results of a preflight request can be cached."
+              example: 86400
+        500:
+          $ref: '#/components/responses/InternalError'
+  /taxonomy:
+    get:
+      tags:
+      - "Public"
+      summary: "Returns a nested hierarchy of topics known as taxonomy"
+      responses:
+        200:
+          description: "A json list o topics broken down into 3 levels of hierarchy."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Taxonomy'
+        500:
+          $ref: '#/components/responses/InternalError'
+    options:
+      tags:
+      - "Public"
+      summary: "Information about the communication options available for the target resource"
+      responses:
+        204:
+          description: "No Content"
+          headers:
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: "The methods allowed access against this resource as a comma separated list."
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: "The web urls allowed access against this resource as a comma separated list."
+              example: "*"
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+              description: "Header indicates how long the results of a preflight request can be cached."
+              example: 86400
+        500:
+          $ref: '#/components/responses/InternalError'
+  /taxonomy/{topic}:
+    get:
+      tags:
+      - "Public"
+      summary: "Returns a single topic resource with data on related parent and child topic resources within the taxonomy."
+      parameters:
+      - $ref: '#/components/parameters/topic'
+      responses:
+        200:
+          description: "A json list o topics broken down into 3 levels of hierarchy."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalError'
+    options:
+      tags:
+      - "Public"
+      summary: "Information about the communication options available for the target resource"
+      parameters:
+      - $ref: '#/components/parameters/topic'
+      responses:
+        204:
+          description: "No Content"
+          headers:
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: "The methods allowed access against this resource as a comma separated list."
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: "The web urls allowed access against this resource as a comma separated list."
+              example: "*"
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+              description: "Header indicates how long the results of a preflight request can be cached."
+              example: 86400
+        500:
+          $ref: '#/components/responses/InternalError'
+components:
+  parameters:
+    q:
+      name: q
+      description: "The searchable term to find relevant datasets."
+      in: query
+      required: true
+      schema:
+        type: string
+    limit:
+      name: limit
+      description: "The number of items requested, defaulted to 50 and limited to 1000."
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 50
+    offset:
+      name: offset
+      description: "The first row of resources to retrieve, starting at 0. Use this parameter as a pagination mechanism along with the limit parameter."
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    dimensions:
+      name: dimensions
+      description: "A comma separated list of a maximum of 10 separate dimensions to filter the dataset search API against dimensions.name field."
+      in: query
+      required: false
+      schema:
+        type: string
+    distance:
+      name: distance
+      description: "The radial distance from post code. The value should contain a numerical (float) value followed by the unit of measurement separated by a comma (e.g. 10,km). Acceptable units are: 1) km, kilometers, kilometres (case insensitive) 2) m, miles (case insensitive)"
+      in: query
+      required: false
+      schema:
+        type: string
+        default: "0.1,km"
+    hierarchies:
+      name: hierarchies
+      description: "A comma separated list of a maximum of 5 separate hierarchies to filter an area profile resource against hierarchy field."
+      in: query
+      required: false
+      schema:
+        type: string
+    relation:
+      name: relation
+      description: "The relationship between the geographical area generated from postcode and distance (circular polygon) and the geographical area that is related to a dataset. This can be either 'intersects' or 'within'"
+      in: query
+      required: false
+      schema:
+        default: "within"
+        type: string
+        enum: [
+          "within",
+          "intersects"
+        ]
+        example: "intersects"
+    topics:
+      name: topics
+      description: "A comma separated list of a maximum of 10 separate topics to filter the dataset search API against topic fields, topic1, topic2 and topic3. Filtering across the levels is not recommended and will likely result in there being no results being returned."
+      in: query
+      required: false
+      schema:
+        type: string
+    topic:
+      name: topic
+      description: "A single topic name"
+      required: true
+      in: path
+      schema:
+        type: string
+  schemas:
+    AllSearch:
+      description: "Multiple lists of search results for data types: datasets, area_profiles and publications. Includes an all object containing a mixture of all data types."
+      type: object
+      required: [
+        counts,
+        all,
+        datasets,
+        area_profiles,
+        publications,
+      ]
+      properties:
+        counts:
+          description: "A list of total counts for each data type."
+          type: object
+          required: [all, datasets, area_profiles, publications]
+          properties:
+            all:
+              $ref: '#/components/schemas/TotalCount'
+            datasets:
+              $ref: '#/components/schemas/TotalCount'
+            area_profiles:
+              $ref: '#/components/schemas/TotalCount'
+            publications:
+              $ref: '#/components/schemas/TotalCount'
+        limit:
+          description: "The number of items requested, defaulted to 50 and limited to 1000."
+          type: integer
+          maximum: 1000
+          default: 50
+        offset:
+          description: "The first row of items to retrieve, starting at 0. Use this parameter as a pagination mechanism along with the limit parameter. The total number of items that one can page through is limited to 1000 items."
+          type: integer
+          maximum: 1000
+          default: 0
+        all:
+          $ref: '#/components/schemas/AllData'
+        datasets:
+          $ref: '#/components/schemas/Datasets'
+        area_profiles:
+          $ref: '#/components/schemas/AreaProfiles'
+        publications:
+          $ref: '#/components/schemas/Publications'
+    TotalCount:
+      description: "The total number of results returned by search."
+      type: integer
+      example: 5
+      maximum: 10000
+    Datasets:
+      description: "A list of dataset resources that matched the dataset query. Filters include topics and dimensions."
+      type: object
+      required: ["count", "items", "total_count"]
+      properties:
+        count:
+          description: "The number of items returned."
+          type: integer
+        items:
+          description: "A list of dataset resources that matched dataset query."
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetSearchResponse'
+        total_count:
+          description: "The total number of dataset resources that matched request. This limit is set to protect infiinte pagination."
+          type: integer
+          maximum: 10000
+    AreaProfiles:
+      description: "A list of area profile resources that matched the area profile query. Be aware that if a postcode is recognised by the API, this will take precedent over other search terms in the query term (q) value. Filters will still take an effect at reducing the result set, e.g. hierarchies."
+      type: object
+      required: ["count", "items", "total_count"]
+      properties:
+        count:
+          description: "The number of items returned."
+          type: integer
+        items:
+          description: "A list of area profile resources that matched are profile query."
+          type: array
+          items:
+            $ref: '#/components/schemas/AreaProfileSearchResponse'
+        total_count:
+          description: "The total number of area profile resources that matched request. This limit is set to protect infinte pagination."
+          type: integer
+          maximum: 10000
+    Publications:
+      description: "A list of publication resources that matched the publication query."
+      type: object
+      required: ["count","limit", "items", "offset", "total_count"]
+      properties:
+        count:
+          description: "The number of items returned."
+          type: integer
+        items:
+          description: "A list of publication resources that matched publication query."
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicationSearchResponse'
+        total_count:
+          description: "The total number of dataset resources that matched request. This limit is set to protect infiinte pagination."
+          type: integer
+          maximum: 10000
+    AllData:
+      description: "A combination of results from different resource types returned in the items. Can include datasets, area_profiles and publications."
+      type: object
+      properties:
+        count:
+          description: "The number of items returned."
+          type: integer
+        items:
+            
+          description: "A list of resources that matched multi query."
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/DatasetSearchResponse'
+              - $ref: '#/components/schemas/AreaProfileSearchResponse'
+              - $ref: '#/components/schemas/PublicationSearchResponse'
+            discriminator:
+              propertyName: doc_type
+        total_count:
+          description: "The total number of resources that matched request. This limit is set to protect infiinte pagination."
+          type: integer
+          maximum: 10000
+    DatasetSearchResponse:
+      description: "An individual result (dataset) based on the search query."
+      type: object
+      required: ["description", "links", "title", "topic1"]
+      properties:
+        alias:
+          type: string
+          description: "The shortened version of the title, usually an acronym."
+          example: "CPIH01"
+        description:
+          type: string
+          description: "A description of the dataset."
+        dimensions:
+          type: array
+          description: "A list of dimension objects that are represented in the dataset."
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+                description: "A human friendly label for the dimension name."
+              name:
+                type: string
+                description: "The name of the dimension stored against a dataset. Use this value to filter a dimension when searching."
+        doc_type:
+          description: "The document type of this resource."
+          type: string
+          enum: ["dataset"]
+        links:
+          $ref: '#/components/schemas/Links'
+        title:
+          type: string
+          description: "The name in which the dataset is known."
+        topic1:
+          type: string
+          description: "Level 1 topic that the dataset relates to."
+        topic2:
+          type: string
+          description: "Level 2 topic that the dataset relates to."
+        topic3:
+          type: string
+          description: "Level 3 topic that the dataset relates to."
+        matches:
+          $ref: '#/components/schemas/DatasetMatches'
+    AreaProfileSearchResponse:
+      description: "An individual result (area profile) based on the search query."
+      type: object
+      required: ["id", "code", "hierarchy", "links"]
+      properties:
+        id:
+          description: "The unique identifier of the area profile resource."
+          type: string
+        code:
+          type: string
+          description: "A code for the area."
+        doc_type:
+          description: "The document type of this resource."
+          type: string
+          enum: ["area_profile"]
+        hierarchy:
+          type: string
+          description: "The geographical hierarchy level"
+          enum: [
+            "Lower Layer Super Output Areas",
+            "Middle Layer Super Output Areas",
+            "Output Areas",
+            "Major Towns and Cities",
+            "Countries"
+          ]
+        name:
+          type: string
+          description: "The name of the geographical location of the dataset."
+          example: "Wales"
+        links:
+          $ref: '#/components/schemas/Links'
+        matches:
+          $ref: '#/components/schemas/AreaProfileMatches'
+    PublicationSearchResponse:
+      description: "An individual result (publication) based on the search query."
+      type: object
+      required: ["id", "title", "links"]
+      properties:
+        id:
+          description: "The unique identifier of the publication resource."
+          type: string
+        doc_type:
+          description: "The document type of this resource."
+          type: string
+          enum: ["publication"]
+        title:
+          type: string
+          description: "The title of the publication."
+        links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      description: "A list of links that related to this resource."
+      type: object
+      required: [
+        self
+      ]
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+    Self:
+      description: "Self represents a link object referencing an href to this unique resource."
+      type: object
+      required: [
+        href
+      ]
+      properties:
+        href:
+          description: "The href to the data for this resource."
+          type: string
+        id: 
+          description: "The unique identifier for this resource."
+          type: string
+    DatasetMatches:
+      description: "A list of text matches across fields that were analysed. Embeds html tags <b>{matched piece of text}<\b>. Can be used by web ui to desplay the matched data."
+      type: object
+      properties:
+        alias:
+          description: "Highlighted alias field due to matched pieces of text."
+          type: array
+          items:
+            type: string
+        description:
+          description: "Highlighted description field due to matched pieces of text."
+          type: array
+          items:
+            type: string
+        dimensions.label:
+          description: "Highlighted dimensions label field due to matching text."
+          type: array
+          items:
+            type: string
+        dimensions.name:
+          description: "Highlighted dimensions name field due to matching keyword."
+          type: array
+          items:
+            type: string
+        title:
+          description: "Highlighted title field due to matched pieces of text."
+          type: array
+          items:
+            type: string
+        topic1:
+          description: "Highlighted level 1 topic field due to query term matching keyword."
+          type: array
+          items:
+            type: string
+        topic2:
+          description: "Highlighted level 2 topic field due to query term matching keyword."
+          type: array
+          items:
+            type: string
+        topic3:
+          description: "Highlighted level 3 topic field due to query term matching keyword."
+          type: array
+          items:
+            type: string
+    AreaProfileMatches:
+      description: "A list of text matches across fields that were analysed. Embeds html tags <b>{matched piece of text}<\b>. Can be used by web ui to desplay the matched data."
+      type: object
+      properties:
+        code:
+          description: "Highlighted code field due to matched pieces of text."
+          type: array
+          items:
+            type: string
+        hierarchy:
+          description: "Highlighted hierarchy field due to matching text."
+          type: array
+          items:
+            type: string
+        name:
+          description: "Highlighted name field due to matching keyword."
+          type: array
+          items:
+            type: string
+    Dimensions:
+      type: object
+      properties:
+        total_count:
+          description: "The total number of dimensions listed in doc."
+          type: integer
+        items:
+          description: "A list of dimensions, containing a name and label field. The name field can be used to filter the datasets endpoint via the dimensions parameter."
+          type: array
+          items:
+            required: [label,name]
+            type: object
+            properties:
+              label:
+                description: "A human readable value of the dimension."
+                type: string
+              name:
+                description: "The dimension value to use as a filter for the dimensions query parameter on the datasets endpoint (when searching for datasets)."
+                type: string
+    Hierarchies:
+      type: object
+      properties:
+        total_count:
+          description: "The total number of hierarchies listed in doc."
+          type: integer
+        items:
+          description: "A list of hierarchies, containing a hierarchy and filterable_hierarchy field. The hierarchy field is a human friendly representation og the geographical hierarchy and the filterable_hierarchy can be used to filter an area_profile search using the hierarchies query parameter."
+          type: array
+          items:
+            required: [hierarchy, filterable_hierarhcy]
+            type: object
+            properties:
+              hierarchy:
+                description: "A human readable value of the hierarchy."
+                type: string
+              filterable_hierarchy:
+                description: "The hierarchy value to use as a filter for the hierarchies query parameter on the search endpoint (when searching for an area_profile)."
+                type: string
+    Taxonomy:
+      type: object
+      properties:
+        topics:
+          description: "A hierarchical structure to describe how topics relate to one another through parent/child relationships."
+          type: array
+          items:
+            $ref: '#/components/schemas/Topics'
+    Topics:
+      type: object
+      required: [
+        title,
+        filterable_title
+      ]
+      properties:
+        title:
+          description: "A human friendly title of a topic at the highest level of the taxonomy, level 1."
+          type: string
+        filterable_title:
+          description: "A separate formatted title that has removed all whitespace and grammar to allow better filtering and searching against a topic title."
+          type: string
+        child_topics:
+          description: "A list of level 2 topics that are related to this topic in the taxonomy hierarchy."
+          type: array
+          items:
+            $ref: '#/components/schemas/ChildTopics'
+    ChildTopics:
+      type: object
+      properties:
+        title:
+          description: "A human friendly title of a topic at the highest level of the taxonomy, level 2."
+          type: string
+        filterable_title:
+          description: "A separate formatted title that has removed all whitespace and grammar to allow better filtering and searching against a topic title."
+          type: string
+        child_topics:
+          description: "A list of level 3 topics that are related to this topic in the taxonomy hierarchy."
+          type: array
+          items:
+            $ref: '#/components/schemas/GrandchildTopics'
+    GrandchildTopics:
+      type: object
+      properties:
+        title:
+          description: "A human friendly title of a topic at the highest level of the taxonomy, level 3."
+          type: string
+        filterable_title:
+          description: "A separate formatted title that has removed all whitespace and grammar to allow better filtering and searching against a topic title."
+          type: string
+    Topic:
+      type: object
+      required: [
+        title,
+        topic
+      ]
+      properties:
+        parent_topic:
+          description: "The parent topic of this topic resource that the topic relates to in the taxonomy."
+          type: string
+        title:
+          description: "A human friendly title of the topic."
+          type: string
+        topic:
+          description: "Same as the title but has all whitespace and grammar removed to allow better filtering and searching against a topic."
+          type: string
+        child_topics:
+          description: "A list of child topics that this topic resource relates to in the taxonomy."
+          type: array
+          items:
+            type: string
+  responses:
+    InvalidRequestError:
+      description: "Failed to process the request due to invalid request."
+    InternalError:
+      description: "Failed to process the request due to an internal error."
+    NotFoundError:
+      description: "Failed to find resource."
