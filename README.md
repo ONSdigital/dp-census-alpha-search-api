@@ -22,9 +22,20 @@ Follow swagger documentation on how to interact with local api, some examples ar
 
 ```
 curl -XOPTIONS localhost:10300/search -vvv
-curl -XGET localhost:10300/search?q=cpih -vvv
-curl -XGET localhost:10300/search?q=estimates -vvv
-curl -XGET "localhost:10300/search?q=estimates&offset=5&limit=5" -vvv
+curl -XGET localhost:10300/search?q={term} -vvv
+curl -XGET "localhost:10300/search?q={term}&offset=5&limit=5" -vvv
+curl -XGET "localhost:10300/search?q={term}&topics={topic}" -vvv (see taxonomy endpoint for topic filter options)
+curl -XGET "localhost:10300/search?q={term}&dimensions={dimension}" -vvv (see dimensions endpoint for dimension filter options)
+curl -XGET "localhost:10300/search?q={term}&hierarchies={geographical hierarchy}" -vvv (see hierarchies endpoint for hierarchy filter options)
+
+
+curl -XGET localhost:10300/area-profiles/{id} -vvv
+curl -XGET localhost:10300/area-profiles/{id}/search?q={term} -vvv (can use the dimensions and topics filter as well as offset and limit params to page through results)
+
+curl -XGET localhost:10300/taxonomy -vvv
+curl -XGET localhost:10300/taxonomy/{topic} -vvv
+curl -XGET localhost:10300/dimensions -vvv
+curl -XGET localhost:10300/hierarchies -vvv
 ```
 
 #### Setting up data
@@ -36,12 +47,16 @@ Once elasticsearch is running and you can connect to your instance. Follow the i
 | Environment variable        | Default               | Description
 | --------------------------- | --------------------- | -----------
 | BIND_ADDR                   | :10300                | The host and port to bind to |
+| AREA_PROFILE_SEARCH_INDEX   | area-profiles         | The index in which the area profile documents are stored in elasticsearch |
 | DATASET_SEARCH_INDEX        | datasets              | The index in which the dataset documents are stored in elasticsearch |
 | POSTCODE_SEARCH_INDEX       | postcodes             | The index in which the postcode documents are stored in elasticsearch |
-| AREA_PROFILE_SEARCH_INDEX   | area-profiles         | The index in which the area profile documents are stored in elasticsearch |
 | ELASTIC_SEARCH_URL          | http://localhost:9200 | The host name for elasticsearch |
 | MAX_SEARCH_RESULTS_OFFSET   | 1000                  | The maximum offset for the number of results returned by search query |
 | SIGN_ELASTICSEARCH_REQUESTS | false                 | Boolean flag to identify whether elasticsearch requests via elastic API need to be signed if elasticsearch cluster is running in aws |
+| DIMENSIONS_FILENAME         | data/dimensions.json  | The json file that contains a list of dimensions that can be used to filter results from search endpoint |
+| HIERARCHIES_FILENAME        | data/hierarchy.json   | The json file that contains a list of geographical hierarchies that can be used to filter results from search endpoint |
+| TAXONOMY_FILENAME           | data/taxonomy.json    | The json file that contains a list of topics that can be used to filter results from search endpoint |
+
 
 ### Notes
 
