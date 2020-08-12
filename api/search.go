@@ -179,6 +179,9 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 				Topic1:         result.Matches.Topic1,
 				Topic2:         result.Matches.Topic2,
 				Topic3:         result.Matches.Topic3,
+				Code:           result.Matches.Code,
+				Hierarchy:      result.Matches.Hierarchy,
+				Name:           result.Matches.Name,
 			}
 
 			allData.Items = append(allData.Items, doc)
@@ -220,9 +223,6 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 				Topic1:         result.Matches.Topic1,
 				Topic2:         result.Matches.Topic2,
 				Topic3:         result.Matches.Topic3,
-				Code:           result.Matches.Code,
-				Hierarchy:      result.Matches.Hierarchy,
-				Name:           result.Matches.Name,
 			}
 
 			datasets.Items = append(datasets.Items, doc)
