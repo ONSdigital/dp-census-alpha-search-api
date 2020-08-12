@@ -75,8 +75,8 @@ type SearchResult struct {
 	Hierarchy string `json:"hierarchy,omitempty"`
 	Name      string `json:"name,omitempty"`
 	// generic data
-	Links   Links   `json:"links,omitempty"`
-	Matches Matches `json:"matches,omitempty"`
+	Links   Links      `json:"links,omitempty"`
+	Matches NewMatches `json:"matches,omitempty"`
 }
 
 // Dimension represents an object containing dimension data
@@ -87,6 +87,23 @@ type Dimension struct {
 
 // Matches represents a list of members and their arrays of character offsets that matched the search term
 type Matches struct {
+	// Dataset Matches
+	Alias          []string `json:"alias,omitempty"`
+	Description    []string `json:"description.raw,omitempty"`
+	DimensionLabel []string `json:"dimensions.label,omitempty"`
+	DimensionName  []string `json:"dimensions.name,omitempty"`
+	Title          []string `json:"title.raw,omitempty"`
+	Topic1         []string `json:"topic1,omitempty"`
+	Topic2         []string `json:"topic2,omitempty"`
+	Topic3         []string `json:"topic3,omitempty"`
+	// Area Profile Matches
+	Code      []string `json:"code,omitempty"`
+	Hierarchy []string `json:"hierarchy,omitempty"`
+	Name      []string `json:"name,omitempty"`
+}
+
+// NewMatches represents a list of members and their arrays of character offsets that matched the search term
+type NewMatches struct {
 	// Dataset Matches
 	Alias          []string `json:"alias,omitempty"`
 	Description    []string `json:"description,omitempty"`

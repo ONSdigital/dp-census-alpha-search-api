@@ -201,7 +201,16 @@ func (api *SearchAPI) getAreaProfileSearch(w http.ResponseWriter, r *http.Reques
 	for _, result := range response.Hits.HitList {
 
 		doc := result.Source
-		doc.Matches = result.Matches
+		doc.Matches = models.NewMatches{
+			Alias:          result.Matches.Alias,
+			Description:    result.Matches.Description,
+			DimensionLabel: result.Matches.DimensionLabel,
+			DimensionName:  result.Matches.DimensionName,
+			Title:          result.Matches.Title,
+			Topic1:         result.Matches.Topic1,
+			Topic2:         result.Matches.Topic2,
+			Topic3:         result.Matches.Topic3,
+		}
 
 		datasets.Items = append(datasets.Items, doc)
 	}

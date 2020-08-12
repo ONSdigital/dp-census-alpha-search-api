@@ -170,7 +170,16 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		for _, result := range response.Hits.HitList {
 
 			doc := result.Source
-			doc.Matches = result.Matches
+			doc.Matches = models.NewMatches{
+				Alias:          result.Matches.Alias,
+				Description:    result.Matches.Description,
+				DimensionLabel: result.Matches.DimensionLabel,
+				DimensionName:  result.Matches.DimensionName,
+				Title:          result.Matches.Title,
+				Topic1:         result.Matches.Topic1,
+				Topic2:         result.Matches.Topic2,
+				Topic3:         result.Matches.Topic3,
+			}
 
 			allData.Items = append(allData.Items, doc)
 		}
@@ -202,7 +211,19 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		for _, result := range response.Hits.HitList {
 
 			doc := result.Source
-			doc.Matches = result.Matches
+			doc.Matches = models.NewMatches{
+				Alias:          result.Matches.Alias,
+				Description:    result.Matches.Description,
+				DimensionLabel: result.Matches.DimensionLabel,
+				DimensionName:  result.Matches.DimensionName,
+				Title:          result.Matches.Title,
+				Topic1:         result.Matches.Topic1,
+				Topic2:         result.Matches.Topic2,
+				Topic3:         result.Matches.Topic3,
+				Code:           result.Matches.Code,
+				Hierarchy:      result.Matches.Hierarchy,
+				Name:           result.Matches.Name,
+			}
 
 			datasets.Items = append(datasets.Items, doc)
 		}
@@ -240,7 +261,11 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		for _, result := range response.Hits.HitList {
 
 			doc := result.Source
-			doc.Matches = result.Matches
+			doc.Matches = models.NewMatches{
+				Code:      result.Matches.Code,
+				Hierarchy: result.Matches.Hierarchy,
+				Name:      result.Matches.Name,
+			}
 
 			areaProfiles.Items = append(areaProfiles.Items, doc)
 		}
@@ -332,8 +357,8 @@ func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLo
 	highlight := make(map[string]models.Object)
 
 	highlight["alias"] = object
-	highlight["description"] = object
-	highlight["title"] = object
+	highlight["description.raw"] = object
+	highlight["title.raw"] = object
 	highlight["topic1"] = object
 	highlight["topic2"] = object
 	highlight["topic3"] = object
@@ -497,8 +522,8 @@ func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topi
 	highlight := make(map[string]models.Object)
 
 	highlight["alias"] = object
-	highlight["description"] = object
-	highlight["title"] = object
+	highlight["description.raw"] = object
+	highlight["title.raw"] = object
 	highlight["topic1"] = object
 	highlight["topic2"] = object
 	highlight["topic3"] = object
@@ -514,8 +539,8 @@ func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topi
 	dimensionLabels := make(map[string]string)
 	dimensionNames := make(map[string]string)
 	alias["alias"] = term
-	description["description"] = term
-	title["title"] = term
+	description["description.raw"] = term
+	title["title.raw"] = term
 	topic1["topic1"] = term
 	topic2["topic2"] = term
 	topic3["topic3"] = term

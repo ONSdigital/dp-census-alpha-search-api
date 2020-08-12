@@ -15,17 +15,22 @@
                     "pattern": "\\s+",
                     "replacement": " ",
                     "type": "pattern_replace"
-                }
+				},
+				"english_stop": {
+					"type":       "stop",
+					"stopwords":  "_english_"
+				  }
             },
             "analyzer": {
                 "raw_analyzer": {
                     "filter": [
                         "lowercase",
                         "collapse_whitespace_filter",
-                        "trim"
+						"trim",
+						"english_stop"
                     ],
                     "tokenizer": "whitespace",
-                    "type": "custom"
+					"type": "custom"
                 }
             }
         }
