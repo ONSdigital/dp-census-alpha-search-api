@@ -124,11 +124,15 @@ type NewMatches struct {
 // Aggregations is a list of aggregated fields with the number of
 // documents that are returned for unique values of an aggregated field
 type Aggregations struct {
-	Hierarchies *Hierarchies `json:"hierarchies,omitempty"`
+	Dimensions  *AggItems `json:"dimensions,omitempty"`
+	Hierarchies *AggItems `json:"hierarchies,omitempty"`
+	Topic1      *AggItems `json:"topic1,omitempty"`
+	Topic2      *AggItems `json:"topic2,omitempty"`
+	Topic3      *AggItems `json:"topic3,omitempty"`
 }
 
-// Hierarchies represents the hierarchy aggregation
-type Hierarchies struct {
+// AggItems represents the a list of items/buckets for aggregation
+type AggItems struct {
 	Items []Bucket `json:"buckets,omitempty"`
 }
 

@@ -13,11 +13,27 @@ type Body struct {
 
 // Aggs represents the name in which an specific aggregation is returned as
 type Aggs struct {
+	Dimensions  Agg `json:"dimensions,omitempty"`
 	Hierarchies Agg `json:"hierarchies,omitempty"`
+	Topic1      Agg `json:"topic1,omitempty"`
+	Topic2      Agg `json:"topic2,omitempty"`
+	Topic3      Agg `json:"topic3,omitempty"`
 }
 
 // Agg represents a list of terms to aggregate results by
 type Agg struct {
+	// Nested *NestedPath `json:"nested,omitempty"`
+	Terms AggTerm `json:"terms"`
+	// Aggs   *NestedAgg  `json:"aggs,omitempty"`
+}
+
+// NestedPath represents the path to the aggregated field
+type NestedPath struct {
+	Path string `json:"path"`
+}
+
+// NestedAgg a list of terms to aggregate results by the nested term
+type NestedAgg struct {
 	Terms AggTerm `json:"terms"`
 }
 
