@@ -2,12 +2,28 @@ package models
 
 // Body represents the request body to elasticsearch
 type Body struct {
-	From      int        `json:"from"`
-	Size      int        `json:"size"`
-	Highlight *Highlight `json:"highlight,omitempty"`
-	Query     Query      `json:"query"`
-	Sort      []Scores   `json:"sort"`
-	TotalHits bool       `json:"track_total_hits"`
+	Aggregations Aggs       `json:"aggs,omitempty"`
+	From         int        `json:"from"`
+	Size         int        `json:"size"`
+	Highlight    *Highlight `json:"highlight,omitempty"`
+	Query        Query      `json:"query"`
+	Sort         []Scores   `json:"sort"`
+	TotalHits    bool       `json:"track_total_hits"`
+}
+
+// Aggs represents the name in which an specific aggregation is returned as
+type Aggs struct {
+	Hierarchies Agg `json:"hierarchies,omitempty"`
+}
+
+// Agg represents a list of terms to aggregate results by
+type Agg struct {
+	Terms AggTerm `json:"terms"`
+}
+
+// AggTerm represents a term to aggregate results by
+type AggTerm struct {
+	Field string `json:"field"`
 }
 
 // Highlight represents parts of the fields that matched

@@ -1,7 +1,8 @@
 package models
 
 type SearchResponse struct {
-	Hits Hits `json:"hits"`
+	Hits         Hits         `json:"hits"`
+	Aggregations Aggregations `json:"aggregations,omitempty"`
 }
 
 type Hits struct {
@@ -44,9 +45,10 @@ type Counts struct {
 
 // SearchResults represents a structure for a list of returned objects
 type SearchResults struct {
-	Count      int            `json:"count"`
-	Items      []SearchResult `json:"items"`
-	TotalCount int            `json:"total_count"`
+	Aggregations *Aggregations  `json:"aggregations,omitempty"`
+	Count        int            `json:"count"`
+	Items        []SearchResult `json:"items"`
+	TotalCount   int            `json:"total_count"`
 }
 
 // DatasetSearchResults represents a structure for a list of returned dataset resources
@@ -117,4 +119,21 @@ type NewMatches struct {
 	Code      []string `json:"code,omitempty"`
 	Hierarchy []string `json:"hierarchy,omitempty"`
 	Name      []string `json:"name,omitempty"`
+}
+
+// Aggregations is a list of aggregated fields with the number of
+// documents that are returned for unique values of an aggregated field
+type Aggregations struct {
+	Hierarchies *Hierarchies `json:"hierarchies,omitempty"`
+}
+
+// Hierarchies represents the hierarchy aggregation
+type Hierarchies struct {
+	Items []Bucket `json:"buckets,omitempty"`
+}
+
+// Bucket represents a single value of the hierarchy and how often it appears across the returned result
+type Bucket struct {
+	Key      string `json:"key,omitempty"`
+	DocCount int    `json:"doc_count,omitempty"`
 }

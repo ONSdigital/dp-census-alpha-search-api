@@ -163,8 +163,9 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		allData := models.SearchResults{
-			TotalCount: response.Hits.Total,
-			Items:      []models.SearchResult{},
+			Aggregations: &response.Aggregations,
+			TotalCount:   response.Hits.Total,
+			Items:        []models.SearchResult{},
 		}
 
 		for _, result := range response.Hits.HitList {
@@ -254,12 +255,12 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		areaProfiles := models.SearchResults{
-			TotalCount: response.Hits.Total,
-			Items:      []models.SearchResult{},
+			Aggregations: &response.Aggregations,
+			TotalCount:   response.Hits.Total,
+			Items:        []models.SearchResult{},
 		}
 
 		for _, result := range response.Hits.HitList {
-
 			doc := result.Source
 			doc.Matches = models.NewMatches{
 				Code:      result.Matches.Code,
@@ -441,6 +442,13 @@ func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLo
 	listOfScores = append(listOfScores, scores)
 
 	query := &models.Body{
+		Aggregations: models.Aggs{
+			Hierarchies: models.Agg{
+				Terms: models.AggTerm{
+					Field: "hierarchy",
+				},
+			},
+		},
 		From: offset,
 		Size: limit,
 		Highlight: &models.Highlight{
@@ -673,9 +681,15 @@ func buildAreaSearchQuery(term string, hierarchyFilters []models.Filter, geoLoca
 			PreTags:  []string{"<b>"},
 			PostTags: []string{"</b>"},
 		},
-
 		Sort:      listOfScores,
 		TotalHits: true,
+		Aggregations: models.Aggs{
+			Hierarchies: models.Agg{
+				Terms: models.AggTerm{
+					Field: "hierarchy",
+				},
+			},
+		},
 	}
 
 	if geoLocation != nil {
