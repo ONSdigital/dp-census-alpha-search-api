@@ -163,8 +163,29 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		allData := models.SearchResults{
-			TotalCount: response.Hits.Total,
-			Items:      []models.SearchResult{},
+			Aggregations: &models.Aggregations{},
+			TotalCount:   response.Hits.Total,
+			Items:        []models.SearchResult{},
+		}
+
+		if len(response.Aggregations.Dimensions.Items) > 0 {
+			allData.Aggregations.Dimensions = response.Aggregations.Dimensions
+		}
+
+		if len(response.Aggregations.Hierarchies.Items) > 0 {
+			allData.Aggregations.Hierarchies = response.Aggregations.Hierarchies
+		}
+
+		if len(response.Aggregations.Topic1.Items) > 0 {
+			allData.Aggregations.Topic1 = response.Aggregations.Topic1
+		}
+
+		if len(response.Aggregations.Topic2.Items) > 0 {
+			allData.Aggregations.Topic2 = response.Aggregations.Topic2
+		}
+
+		if len(response.Aggregations.Topic3.Items) > 0 {
+			allData.Aggregations.Topic3 = response.Aggregations.Topic3
 		}
 
 		for _, result := range response.Hits.HitList {
@@ -207,8 +228,25 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		datasets := models.SearchResults{
-			TotalCount: response.Hits.Total,
-			Items:      []models.SearchResult{},
+			Aggregations: &models.Aggregations{},
+			TotalCount:   response.Hits.Total,
+			Items:        []models.SearchResult{},
+		}
+
+		if len(response.Aggregations.Dimensions.Items) > 0 {
+			datasets.Aggregations.Dimensions = response.Aggregations.Dimensions
+		}
+
+		if len(response.Aggregations.Topic1.Items) > 0 {
+			datasets.Aggregations.Topic1 = response.Aggregations.Topic1
+		}
+
+		if len(response.Aggregations.Topic2.Items) > 0 {
+			datasets.Aggregations.Topic2 = response.Aggregations.Topic2
+		}
+
+		if len(response.Aggregations.Topic3.Items) > 0 {
+			datasets.Aggregations.Topic3 = response.Aggregations.Topic3
 		}
 
 		for _, result := range response.Hits.HitList {
@@ -254,12 +292,16 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		areaProfiles := models.SearchResults{
-			TotalCount: response.Hits.Total,
-			Items:      []models.SearchResult{},
+			Aggregations: &models.Aggregations{},
+			TotalCount:   response.Hits.Total,
+			Items:        []models.SearchResult{},
+		}
+
+		if len(response.Aggregations.Hierarchies.Items) > 0 {
+			areaProfiles.Aggregations.Hierarchies = response.Aggregations.Hierarchies
 		}
 
 		for _, result := range response.Hits.HitList {
-
 			doc := result.Source
 			doc.Matches = models.NewMatches{
 				Code:      result.Matches.Code,
@@ -441,6 +483,33 @@ func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLo
 	listOfScores = append(listOfScores, scores)
 
 	query := &models.Body{
+		Aggregations: models.Aggs{
+			Dimensions: models.Agg{
+				Terms: models.AggTerm{
+					Field: "dimensions.name",
+				},
+			},
+			Hierarchies: models.Agg{
+				Terms: models.AggTerm{
+					Field: "hierarchy",
+				},
+			},
+			Topic1: models.Agg{
+				Terms: models.AggTerm{
+					Field: "topic1",
+				},
+			},
+			Topic2: models.Agg{
+				Terms: models.AggTerm{
+					Field: "topic2",
+				},
+			},
+			Topic3: models.Agg{
+				Terms: models.AggTerm{
+					Field: "topic3",
+				},
+			},
+		},
 		From: offset,
 		Size: limit,
 		Highlight: &models.Highlight{
@@ -581,6 +650,28 @@ func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topi
 	listOfScores = append(listOfScores, scores)
 
 	query := &models.Body{
+		Aggregations: models.Aggs{
+			Dimensions: models.Agg{
+				Terms: models.AggTerm{
+					Field: "dimensions.name",
+				},
+			},
+			Topic1: models.Agg{
+				Terms: models.AggTerm{
+					Field: "topic1",
+				},
+			},
+			Topic2: models.Agg{
+				Terms: models.AggTerm{
+					Field: "topic2",
+				},
+			},
+			Topic3: models.Agg{
+				Terms: models.AggTerm{
+					Field: "topic3",
+				},
+			},
+		},
 		From: offset,
 		Size: limit,
 		Highlight: &models.Highlight{
@@ -673,9 +764,15 @@ func buildAreaSearchQuery(term string, hierarchyFilters []models.Filter, geoLoca
 			PreTags:  []string{"<b>"},
 			PostTags: []string{"</b>"},
 		},
-
 		Sort:      listOfScores,
 		TotalHits: true,
+		Aggregations: models.Aggs{
+			Hierarchies: models.Agg{
+				Terms: models.AggTerm{
+					Field: "hierarchy",
+				},
+			},
+		},
 	}
 
 	if geoLocation != nil {

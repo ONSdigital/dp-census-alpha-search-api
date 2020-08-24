@@ -2,12 +2,44 @@ package models
 
 // Body represents the request body to elasticsearch
 type Body struct {
-	From      int        `json:"from"`
-	Size      int        `json:"size"`
-	Highlight *Highlight `json:"highlight,omitempty"`
-	Query     Query      `json:"query"`
-	Sort      []Scores   `json:"sort"`
-	TotalHits bool       `json:"track_total_hits"`
+	Aggregations Aggs       `json:"aggs,omitempty"`
+	From         int        `json:"from"`
+	Size         int        `json:"size"`
+	Highlight    *Highlight `json:"highlight,omitempty"`
+	Query        Query      `json:"query"`
+	Sort         []Scores   `json:"sort"`
+	TotalHits    bool       `json:"track_total_hits"`
+}
+
+// Aggs represents the name in which an specific aggregation is returned as
+type Aggs struct {
+	Dimensions  Agg `json:"dimensions,omitempty"`
+	Hierarchies Agg `json:"hierarchies,omitempty"`
+	Topic1      Agg `json:"topic1,omitempty"`
+	Topic2      Agg `json:"topic2,omitempty"`
+	Topic3      Agg `json:"topic3,omitempty"`
+}
+
+// Agg represents a list of terms to aggregate results by
+type Agg struct {
+	// Nested *NestedPath `json:"nested,omitempty"`
+	Terms AggTerm `json:"terms"`
+	// Aggs   *NestedAgg  `json:"aggs,omitempty"`
+}
+
+// NestedPath represents the path to the aggregated field
+type NestedPath struct {
+	Path string `json:"path"`
+}
+
+// NestedAgg a list of terms to aggregate results by the nested term
+type NestedAgg struct {
+	Terms AggTerm `json:"terms"`
+}
+
+// AggTerm represents a term to aggregate results by
+type AggTerm struct {
+	Field string `json:"field"`
 }
 
 // Highlight represents parts of the fields that matched
