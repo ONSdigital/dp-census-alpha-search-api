@@ -19,10 +19,11 @@ const (
 	defaultOffset   = 0
 	defaultSegments = 20
 
-	internalError         = "internal server error"
-	exceedsDefaultMaximum = "the maximum offset has been reached, the offset cannot be more than"
-	topicFilterError      = "invalid list of topics to filter by"
-	hierarchyFilterError  = "invalid hierarchy to filter by"
+	internalError               = "internal server error"
+	exceedsDefaultMaximumOffset = "the maximum offset has been reached, the offset cannot be more than"
+	exceedsDefaultMaximumLimit  = "the maximum limit has been reached, the limit cannot be more than"
+	topicFilterError            = "invalid list of topics to filter by"
+	hierarchyFilterError        = "invalid hierarchy to filter by"
 )
 
 var regPostcode = regexp.MustCompile(`(?i)[A-Z][A-HJ-Y]?\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2}`)
@@ -153,9 +154,9 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// build all search query
-		allDataQuery := api.buildAllSearchQuery(term, geoLocation, dimensionFilters, hierarchyFilters, topicFilters, limit, offset)
+		allDataQuery := api.buildAllSearchQuery(term, geoLocation, dimensionFilters, hierarchyFilters, topicFilters, page)
 
-		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.datasetIndex+","+api.areaProfileIndex, allDataQuery, limit, offset)
+		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.datasetIndex+","+api.areaProfileIndex, allDataQuery)
 		if err != nil {
 			logData["elasticsearch_status"] = status
 			log.Event(ctx, "searchData endpoint: failed to get all datat type search results", log.ERROR, log.Error(err), logData)
@@ -216,9 +217,9 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	// find datasets
 	go func() {
 		// build dataset search query
-		datasetQuery := buildDatasetSearchQuery(term, dimensionFilters, topicFilters, limit, offset)
+		datasetQuery := buildDatasetSearchQuery(term, dimensionFilters, topicFilters, page)
 
-		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.datasetIndex, datasetQuery, limit, offset)
+		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.datasetIndex, datasetQuery)
 		if err != nil {
 			logData["elasticsearch_status"] = status
 			log.Event(ctx, "searchData endpoint: failed to get dataset search results", log.ERROR, log.Error(err), logData)
@@ -280,9 +281,9 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		areaProfileQuery := buildAreaSearchQuery(term, hierarchyFilters, geoLocation, limit, offset)
+		areaProfileQuery := buildAreaSearchQuery(term, hierarchyFilters, geoLocation, page)
 
-		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.areaProfileIndex, areaProfileQuery, limit, offset)
+		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.areaProfileIndex, areaProfileQuery)
 		if err != nil {
 			logData["elasticsearch_status"] = status
 			log.Event(ctx, "searchData endpoint: failed to get area profile search results", log.ERROR, log.Error(err), logData)
@@ -381,7 +382,9 @@ func setErrorCode(w http.ResponseWriter, err error) {
 		http.Error(w, err.Error(), http.StatusNotFound)
 	case errs.BadRequestMap[err]:
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	case strings.Contains(err.Error(), exceedsDefaultMaximum):
+	case strings.Contains(err.Error(), exceedsDefaultMaximumOffset):
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	case strings.Contains(err.Error(), exceedsDefaultMaximumLimit):
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	case strings.Contains(err.Error(), topicFilterError):
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -394,7 +397,7 @@ func setErrorCode(w http.ResponseWriter, err error) {
 	}
 }
 
-func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLocation, dimensionFilters []models.Filter, hierarchyFilters []models.Filter, topicFilters []models.Filter, limit, offset int) *models.Body {
+func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLocation, dimensionFilters []models.Filter, hierarchyFilters []models.Filter, topicFilters []models.Filter, page *models.PageVariables) *models.Body {
 	var object models.Object
 	highlight := make(map[string]models.Object)
 
@@ -510,8 +513,8 @@ func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLo
 				},
 			},
 		},
-		From: offset,
-		Size: limit,
+		From: page.Offset,
+		Size: page.Limit,
 		Highlight: &models.Highlight{
 			Fields:   highlight,
 			PreTags:  []string{"<b>"},
@@ -586,7 +589,7 @@ func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLo
 	return query
 }
 
-func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topicFilters []models.Filter, limit, offset int) *models.Body {
+func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topicFilters []models.Filter, page *models.PageVariables) *models.Body {
 	var object models.Object
 	highlight := make(map[string]models.Object)
 
@@ -672,8 +675,8 @@ func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topi
 				},
 			},
 		},
-		From: offset,
-		Size: limit,
+		From: page.Offset,
+		Size: page.Limit,
 		Highlight: &models.Highlight{
 			Fields:   highlight,
 			PreTags:  []string{"<b>"},
@@ -720,7 +723,7 @@ func buildDatasetSearchQuery(term string, dimensionFilters []models.Filter, topi
 	return query
 }
 
-func buildAreaSearchQuery(term string, hierarchyFilters []models.Filter, geoLocation *models.GeoLocation, limit, offset int) *models.Body {
+func buildAreaSearchQuery(term string, hierarchyFilters []models.Filter, geoLocation *models.GeoLocation, page *models.PageVariables) *models.Body {
 	var object models.Object
 	highlight := make(map[string]models.Object)
 
@@ -757,8 +760,8 @@ func buildAreaSearchQuery(term string, hierarchyFilters []models.Filter, geoLoca
 	listOfScores = append(listOfScores, scores)
 
 	query := &models.Body{
-		From: offset,
-		Size: limit,
+		From: page.Offset,
+		Size: page.Limit,
 		Highlight: &models.Highlight{
 			Fields:   highlight,
 			PreTags:  []string{"<b>"},

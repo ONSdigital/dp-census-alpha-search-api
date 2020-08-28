@@ -20,6 +20,8 @@ var (
 	ErrMarshallingQuery = errors.New("failed to marshal query to bytes for request body to send to elastic")
 	// ErrMissingShapeFile        = errors.New("missing shapefile value in request")
 	// ErrMissingType             = errors.New("missing type value in request")
+	ErrNegativeLimit           = errors.New("limit needs to be a positive number, limit cannot be lower than 0")
+	ErrNegativeOffset          = errors.New("offset needs to be a positive number, offset cannot be lower than 0")
 	ErrParsingQueryParameters  = errors.New("failed to parse query parameters, values must be an integer")
 	ErrPostcodeNotFound        = errors.New("postcode not found")
 	ErrTooManyDimensionFilters = errors.New("Too many dimension filters, limited to a maximum of 10")
@@ -47,6 +49,8 @@ var (
 		// ErrLessThanFourCoordinates: true,
 		// ErrLessThanTwoPolygons:     true,
 		// ErrMissingType:             true,
+		ErrNegativeLimit:           true,
+		ErrNegativeOffset:          true,
 		ErrParsingQueryParameters:  true,
 		ErrTooManyDimensionFilters: true,
 		ErrTooManyHierarchyFilters: true,

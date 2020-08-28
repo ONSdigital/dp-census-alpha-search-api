@@ -181,9 +181,9 @@ func (api *SearchAPI) getAreaProfileSearch(w http.ResponseWriter, r *http.Reques
 	}
 
 	// build dataset search query
-	datasetQuery := buildAreaProfileDatasetSearchQuery(&areaProfile.Location, term, dimensionFilters, topicFilters, relation, limit, offset)
+	datasetQuery := buildAreaProfileDatasetSearchQuery(&areaProfile.Location, term, dimensionFilters, topicFilters, relation, page.Limit, page.Offset)
 
-	response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.datasetIndex, datasetQuery, limit, offset)
+	response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.datasetIndex, datasetQuery)
 	if err != nil {
 		logData["elasticsearch_status"] = status
 		log.Event(ctx, "getAreaProfileSearch endpoint: failed to get dataset search results", log.ERROR, log.Error(err), logData)

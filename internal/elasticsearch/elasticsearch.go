@@ -122,7 +122,7 @@ func (api *API) SingleRequest(ctx context.Context, indexName string, document in
 }
 
 // QuerySearchIndex ...
-func (api *API) QuerySearchIndex(ctx context.Context, indexName string, query interface{}, limit, offset int) (*models.SearchResponse, int, error) {
+func (api *API) QuerySearchIndex(ctx context.Context, indexName string, query interface{}) (*models.SearchResponse, int, error) {
 	var path string
 	if indexName == "" {
 		path = api.url + "/_search"
