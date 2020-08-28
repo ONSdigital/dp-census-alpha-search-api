@@ -141,14 +141,15 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		datasetChan     = make(chan models.SearchResults, 1)
 		areaProfileChan = make(chan models.SearchResults, 1)
 		publicationChan = make(chan models.SearchResults, 1)
-		reqError        error
+
+		allReqError, datasetReqError, areaProfileReqError error
 	)
 
 	// find all data
 	go func() {
 		geoLocation, err := api.getPostcodeLocation(ctx, term, distObj, logData)
 		if err != nil {
-			reqError = err
+			allReqError = err
 			allChan <- models.SearchResults{}
 			return
 		}
@@ -159,8 +160,10 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		response, status, err := api.elasticsearch.QuerySearchIndex(ctx, api.datasetIndex+","+api.areaProfileIndex, allDataQuery)
 		if err != nil {
 			logData["elasticsearch_status"] = status
-			log.Event(ctx, "searchData endpoint: failed to get all datat type search results", log.ERROR, log.Error(err), logData)
-			reqError = err
+			log.Event(ctx, "searchData endpoint: failed to get all data type search results", log.ERROR, log.Error(err), logData)
+			allReqError = err
+			allChan <- models.SearchResults{}
+			return
 		}
 
 		allData := models.SearchResults{
@@ -223,7 +226,7 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			logData["elasticsearch_status"] = status
 			log.Event(ctx, "searchData endpoint: failed to get dataset search results", log.ERROR, log.Error(err), logData)
-			reqError = err
+			datasetReqError = err
 			datasetChan <- models.SearchResults{}
 			return
 		}
@@ -276,7 +279,7 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		geoLocation, err := api.getPostcodeLocation(ctx, term, distObj, logData)
 		if err != nil {
-			reqError = err
+			areaProfileReqError = err
 			areaProfileChan <- models.SearchResults{}
 			return
 		}
@@ -287,7 +290,7 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			logData["elasticsearch_status"] = status
 			log.Event(ctx, "searchData endpoint: failed to get area profile search results", log.ERROR, log.Error(err), logData)
-			reqError = err
+			areaProfileReqError = err
 			areaProfileChan <- models.SearchResults{}
 			return
 		}
@@ -332,8 +335,18 @@ func (api *SearchAPI) searchData(w http.ResponseWriter, r *http.Request) {
 	publications := <-publicationChan
 
 	// handle any request errors from search queries
-	if reqError != nil {
-		setErrorCode(w, reqError)
+	if allReqError != nil {
+		setErrorCode(w, allReqError)
+		return
+	}
+
+	if datasetReqError != nil {
+		setErrorCode(w, datasetReqError)
+		return
+	}
+
+	if areaProfileReqError != nil {
+		setErrorCode(w, areaProfileReqError)
 		return
 	}
 

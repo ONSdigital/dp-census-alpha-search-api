@@ -44,7 +44,7 @@ func (api *SearchAPI) getAreaProfile(w http.ResponseWriter, r *http.Request) {
 	response, status, err := api.elasticsearch.GetAreaProfile(ctx, api.areaProfileIndex, query)
 	if err != nil {
 		logData["elasticsearch_status"] = status
-		log.Event(ctx, "getAreaProfile endpoint: failed to get all datat type search results", log.ERROR, log.Error(err), logData)
+		log.Event(ctx, "getAreaProfile endpoint: failed to get all data type search results", log.ERROR, log.Error(err), logData)
 		setErrorCode(w, err)
 		return
 	}
@@ -175,7 +175,7 @@ func (api *SearchAPI) getAreaProfileSearch(w http.ResponseWriter, r *http.Reques
 	areaProfile, status, err := api.elasticsearch.GetAreaProfile(ctx, api.areaProfileIndex, query)
 	if err != nil {
 		logData["elasticsearch_status"] = status
-		log.Event(ctx, "getAreaProfileSearch endpoint: failed to get all datat type search results", log.ERROR, log.Error(err), logData)
+		log.Event(ctx, "getAreaProfileSearch endpoint: failed to get all data type search results", log.ERROR, log.Error(err), logData)
 		setErrorCode(w, err)
 		return
 	}
