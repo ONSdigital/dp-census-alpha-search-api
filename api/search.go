@@ -427,9 +427,9 @@ func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLo
 	hierarchy := make(map[string]string)
 	name := make(map[string]string)
 
-	alias["alias"] = term
-	description["description"] = term
-	title["title"] = term
+	alias["alias.raw"] = term
+	description["description.raw"] = term
+	title["title.raw"] = term
 	topic1["topic1"] = term
 	topic2["topic2"] = term
 	topic3["topic3"] = term
@@ -577,6 +577,19 @@ func (api *SearchAPI) buildAllSearchQuery(term string, geoLocation *models.GeoLo
 								codeMatch,
 								hierarchyMatch,
 								nameMatch,
+								{
+									Nested: &models.Nested{
+										Path: "dimensions",
+										Query: []models.NestedQuery{
+											{
+												Term: dimensionLabels,
+											},
+											{
+												Term: dimensionNames,
+											},
+										},
+									},
+								},
 							},
 							MinimumShouldMatch: 1,
 						},

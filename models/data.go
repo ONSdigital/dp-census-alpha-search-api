@@ -90,7 +90,7 @@ type Dimension struct {
 // Matches represents a list of members and their arrays of character offsets that matched the search term
 type Matches struct {
 	// Dataset Matches
-	Alias          []string `json:"alias,omitempty"`
+	Alias          []string `json:"alias.raw,omitempty"`
 	Description    []string `json:"description.raw,omitempty"`
 	DimensionLabel []string `json:"dimensions.label,omitempty"`
 	DimensionName  []string `json:"dimensions.name,omitempty"`
